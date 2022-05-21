@@ -17,8 +17,10 @@ export class Database {
   initialize() {
     this.db.run(`CREATE TABLE IF NOT EXISTS cam (
       uuid TEXT NOT NULL PRIMARY KEY,
-      name TEXT,
-      stream TEXT
+      name TEXT NOT NULL,
+      streamMain TEXT NOT NULL,
+      streamSub TEXT,
+      snapshot TEXT
     )`)
   }
 
@@ -40,29 +42,29 @@ export class Database {
     })
   }
 
-  async addCamera(name: string, stream: string): Promise<Camera> {
+  async addCamera(cam: Camera): Promise<Camera> {
     const id = uuid()
     await new Promise((resolve, reject) => {
       this.db
-        .prepare(`INSERT INTO cam(uuid, name, stream) values (?, ?, ?)`)
+        .prepare(`INSERT INTO cam(uuid, name, streamMain, streamSub, snapshot) values (?, ?, ?, ?, ?)`)
         .run(
-          [id, name, stream],
+          [id, cam.name, cam.streamMain, cam.streamSub, cam.snapshot],
           function (err) { err ? reject(err) : resolve(null)}
         )
     })
-    return { uuid: id, name, stream }
+    return { ...cam, uuid: id }
   }
 
-  async updateCamera(id: string, name: string, stream: string): Promise<Camera> {
+  async updateCamera(id: string, cam: Camera): Promise<Camera> {
     await new Promise((resolve, reject) => {
       this.db
-        .prepare(`UPDATE cam SET name = ?, stream = ? WHERE uuid = ?`)
+        .prepare(`UPDATE cam SET name = ?, streamMain = ?, streamSub = ?, snapshot = ? WHERE uuid = ?`)
         .run(
-          [name, stream, id],
+          [cam.name, cam.streamMain, cam.streamSub, cam.snapshot, id],
           function (err) { err ? reject(err) : resolve(null)}
         )
     })
-    return { uuid: id, name, stream }
+    return { ...cam, uuid: id }
   }
 
   async removeCamera(id: string): Promise<void> {

@@ -7,7 +7,9 @@ import { Camera } from 'src/types'
 const emptyCam: Camera = {
   uuid: null,
   name: '',
-  stream: '',
+  streamMain: '',
+  streamSub: '',
+  snapshot: '',
 }
 
 const CamEdit = () => {
@@ -44,8 +46,16 @@ const CamEdit = () => {
           <input name="name" value={cam.name} onChange={handleChange} />
         </label>
         <label>
-          <span><FormattedMessage id="config.edit.field.stream" /></span>
-          <input name="stream" value={cam.stream} onChange={handleChange} />
+          <span><FormattedMessage id="config.edit.field.streamMain" /></span>
+          <input name="streamMain" value={cam.streamMain} onChange={handleChange} />
+        </label>
+        <label>
+          <span><FormattedMessage id="config.edit.field.streamSub" /></span>
+          <input name="streamSub" value={cam.streamSub} onChange={handleChange} />
+        </label>
+        <label>
+          <span><FormattedMessage id="config.edit.field.snapshot" /></span>
+          <input name="snapshot" value={cam.snapshot} onChange={handleChange} />
         </label>
         <button className="primary">
           <FormattedMessage id={'config.edit.' + (id ? 'save' : 'add')} />

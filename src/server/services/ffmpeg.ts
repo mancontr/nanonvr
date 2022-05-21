@@ -37,7 +37,7 @@ export const startRecordingCam = (cam: Camera) => {
     '-xerror',
     '-stimeout', '3000000',
     '-rtsp_transport', 'tcp',
-    '-i', cam.stream,
+    '-i', cam.streamMain,
     '-an',
     '-vcodec', 'copy',
     '-f', 'segment',

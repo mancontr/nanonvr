@@ -12,15 +12,13 @@ export const getCamera: Router.IMiddleware = async (ctx) => {
 }
 
 export const addCamera: Router.IMiddleware = async (ctx) => {
-  const { name, stream } = ctx.request.body
-  const cam = await db.addCamera(name, stream)
+  const cam = await db.addCamera(ctx.request.body)
   ctx.body = cam
 }
 
 export const updateCamera: Router.IMiddleware = async (ctx) => {
   const id = ctx.params.id
-  const { name, stream } = ctx.request.body
-  const cam = await db.updateCamera(id, name, stream)
+  const cam = await db.updateCamera(id, ctx.request.body)
   ctx.body = cam
 }
 
