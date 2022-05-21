@@ -10,6 +10,7 @@ router.use(koaBody({ multipart: true }))
 
 router.get('/api/cameras', cameras.getCameras)
 router.get('/api/cameras/:id', cameras.getCamera)
+router.get('/api/cameras/:id/snapshot', cameras.getThumb)
 router.post('/api/cameras', cameras.addCamera)
 router.put('/api/cameras/:id', cameras.updateCamera)
 router.delete('/api/cameras/:id', cameras.removeCamera)

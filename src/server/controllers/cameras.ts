@@ -11,6 +11,14 @@ export const getCamera: Router.IMiddleware = async (ctx) => {
   ctx.body = cam
 }
 
+export const getThumb: Router.IMiddleware = async (ctx) => {
+  const cam = await db.getCamera(ctx.params.id)
+  if (!cam.snapshot) ctx.throw(404, 'Not Found')
+  const res = await fetch(cam.snapshot)
+  ctx.type = res.headers.get('Content-Type') || 'image/jpeg'
+  ctx.body = res.body
+}
+
 export const addCamera: Router.IMiddleware = async (ctx) => {
   const cam = await db.addCamera(ctx.request.body)
   ctx.body = cam
