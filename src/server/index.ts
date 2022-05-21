@@ -9,7 +9,10 @@ const router = new Router()
 router.use(koaBody({ multipart: true }))
 
 router.get('/api/cameras', cameras.getCameras)
+router.get('/api/cameras/:id', cameras.getCamera)
 router.post('/api/cameras', cameras.addCamera)
+router.put('/api/cameras/:id', cameras.updateCamera)
+router.delete('/api/cameras/:id', cameras.removeCamera)
 
 router.get('/api/(.*)', ctx => {
   if (!ctx.body) ctx.throw(404, 'Not found')

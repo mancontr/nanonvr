@@ -11,3 +11,20 @@ body
 a
   color: inherit
   text-decoration: none
+
+form
+  label
+    display: block
+    margin-bottom: 5px
+
+    span
+      display: inline-block
+      width: 60px
+      &::after
+        content: ':'
+
+    input
+      width: 250px
+
+  button + button
+    margin-left: 5px

@@ -1,30 +1,16 @@
-import React, { Suspense } from 'react'
-import { useCameras } from 'src/hooks/api'
-// import { FormattedMessage } from 'react-intl'
-import './Config.sass'
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
+import CamEdit from './CamEdit/CamEdit'
+import CamList from './CamList/CamList'
 
 const Config = () => {
-  const cams = useCameras()
   return (
-    <main id="config">
-      Cameras:
-      <div id="cam-list">
-        {cams.map(cam =>
-          <div key={cam.uuid} className="cam-entry">
-            {cam.name}
-          </div>
-        )}
-        <div className="cam-entry new">
-          Add...
-        </div>
-      </div>
-    </main>
+    <Switch>
+      <Route path="/config" exact component={CamList} />
+      <Route path="/config/new" exact component={CamEdit} />
+      <Route path="/config/:id" exact component={CamEdit} />
+    </Switch>
   )
 }
 
-const ConfigWrapper = () =>
-  <Suspense fallback={false}>
-    <Config />
-  </Suspense>
-
-export default ConfigWrapper
+export default Config

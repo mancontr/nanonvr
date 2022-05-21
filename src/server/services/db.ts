@@ -30,6 +30,16 @@ export class Database {
     })
   }
 
+  getCamera(id: string): Promise<Camera> {
+    return new Promise((resolve, reject) => {
+      this.db
+        .prepare('SELECT * FROM cam WHERE uuid = ?')
+        .get([id], (err, row) => {
+          err ? reject(err) : resolve(row)
+        })
+    })
+  }
+
   async addCamera(name: string, stream: string): Promise<Camera> {
     const id = uuid()
     await new Promise((resolve, reject) => {
@@ -41,6 +51,28 @@ export class Database {
         )
     })
     return { uuid: id, name, stream }
+  }
+
+  async updateCamera(id: string, name: string, stream: string): Promise<Camera> {
+    await new Promise((resolve, reject) => {
+      this.db
+        .prepare(`UPDATE cam SET name = ?, stream = ? WHERE uuid = ?`)
+        .run(
+          [name, stream, id],
+          function (err) { err ? reject(err) : resolve(null)}
+        )
+    })
+    return { uuid: id, name, stream }
+  }
+
+  async removeCamera(id: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.db
+        .prepare('DELETE FROM cam WHERE uuid = ?')
+        .get([id], (err) => {
+          err ? reject(err) : resolve(null)
+        })
+    })
   }
 
 }

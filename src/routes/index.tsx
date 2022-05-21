@@ -9,7 +9,7 @@ const App = () =>
     <TopBar />
     <Switch>
       <Route path="/" exact component={Home} />
-      <Route path="/config" exact component={Config} />
+      <Route path="/config" component={Config} />
     </Switch>
   </>
 
