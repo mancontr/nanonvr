@@ -1,3 +1,5 @@
 {
-  "home.welcome": "Hello, world!"
+  "title": "NanoNVR",
+  "topbar.config": "Config",
+  "topbar.home": "Home"
 }

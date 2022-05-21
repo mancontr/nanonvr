@@ -1,8 +1,12 @@
 import React from 'react'
-import { FormattedMessage } from 'react-intl'
+// import { FormattedMessage } from 'react-intl'
 
 const Home = () => {
-  return <h1><FormattedMessage id="home.welcome" /></h1>
+  return (
+    <main id="home">
+      Work in progress...
+    </main>
+  )
 }
 
 export default Home

@@ -18,6 +18,6 @@ router.get('/api/(.*)', ctx => {
 // --- Initialise other startup jobs ---
 
 fswatch.start()
-ffmpeg.startRecordingAll()
+if (false) ffmpeg.startRecordingAll()
 
 export default router.routes()
