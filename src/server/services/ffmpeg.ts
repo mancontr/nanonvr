@@ -34,7 +34,6 @@ export const startRecordingCam = (cam: Camera) => {
   const cmd = info.process = spawn('ffmpeg', [
     '-hide_banner',
     '-loglevel', 'error',
-    '-xerror',
     '-stimeout', '3000000',
     '-rtsp_transport', 'tcp',
     '-i', cam.streamMain,
@@ -48,7 +47,8 @@ export const startRecordingCam = (cam: Camera) => {
     '-metadata', 'title=' + cam.name,
     target
   ])
-
+  cmd.stdout.on('data', text => console.warn('[ffmpeg]', text.toString()))
+  cmd.stderr.on('data', text => console.warn('[ffmpeg]', text.toString()))
   cmd.on('close', code => {
     console.log(`* Recording stopped for ${cam.name} (status=${code})`)
     info.process = null
