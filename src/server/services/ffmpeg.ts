@@ -59,7 +59,7 @@ export const startRecordingCam = (cam: Camera) => {
 }
 
 export const startRecordingAll = async () => {
-  const cameras = await db.getCameras()
+  const cameras = db.getCameras()
   cameras.forEach(startRecordingCam)
 }
 
