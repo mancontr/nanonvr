@@ -5,3 +5,10 @@ export interface Camera {
   streamSub?: string
   snapshot?: string
 }
+
+export interface Track {
+  uuid: string
+  filename: string
+  filesize: number
+  length: number
+}
