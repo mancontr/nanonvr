@@ -1,6 +1,7 @@
 import Router from 'koa-router'
 import koaBody from 'koa-body'
 import * as cameras from './controllers/cameras'
+import * as tracks from './controllers/tracks'
 
 const router = new Router()
 
@@ -12,6 +13,8 @@ router.get('/api/cameras/:id/snapshot', cameras.getThumb)
 router.post('/api/cameras', cameras.addCamera)
 router.put('/api/cameras/:id', cameras.updateCamera)
 router.delete('/api/cameras/:id', cameras.removeCamera)
+
+router.get('/api/cameras/:id/tracks', tracks.getTracks)
 
 router.all('/api/(.*)', ctx => {
   if (!ctx.body) ctx.throw(404, 'Not found')

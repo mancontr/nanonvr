@@ -1,6 +1,6 @@
 import { mkdirSync } from 'fs'
 import path from 'path'
-import { ChildProcess, spawn } from 'child_process'
+import { ChildProcess, spawn, exec } from 'child_process'
 import db from './db'
 import { Camera } from 'src/types'
 import { dataDir } from 'src/config'
@@ -64,7 +64,10 @@ export const startRecordingAll = async () => {
 }
 
 export const getVideoLength = async (file: string): Promise<number> => {
-  // TODO: Use ffprobe to get the video length and return it
-  file // do something with this...
-  return 0
+  const cmd = `ffprobe -show_entries format=duration -v quiet -of csv="p=0" "${file}"`
+  const out: string = await new Promise((resolve, reject) =>
+    exec(cmd, (err, text) => err ? reject(err) : resolve(text))
+  )
+  const secs = Math.round(parseFloat(out))
+  return secs
 }
