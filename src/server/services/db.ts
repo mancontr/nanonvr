@@ -11,7 +11,6 @@ export class Database {
 
   constructor(altPath: string = defaultPath) {
     this.db = new SqliteDatabase(altPath)
-    this.initialize()
   }
 
   initialize() {
@@ -72,6 +71,12 @@ export class Database {
     return this.db
       .prepare('SELECT * FROM track WHERE uuid = ? ORDER BY filename DESC')
       .all([camId])
+  }
+
+  getTrack(camId: string, filename: string): Track {
+    return this.db
+      .prepare('SELECT * FROM track WHERE uuid = ? AND filename = ?')
+      .get([camId, filename])
   }
 
   addTrack(camId: string, track: Track): Track {
