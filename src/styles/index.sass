@@ -5,7 +5,18 @@ body
   color: #e1e1e1
   margin: 0
 
+html, body, #root
+  height: 100%
+
+#root
+  display: flex
+  flex-direction: column
+
+#root #top-bar
+  flex: 0 0 auto
+
 #root > main
+  flex: 1 1 auto
   padding: 20px
 
 a
