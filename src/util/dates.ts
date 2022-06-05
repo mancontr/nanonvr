@@ -20,13 +20,13 @@ export const trackAddDates = (track: Track) => {
  * @param size The size of each block (eg: 3600000 for hourly)
  * @returns A list of day boundaries
  */
- export const getTimeMarksBetweenDates = (start: number, end: number, size: number): number[] => {
+ export const getTimeMarksBetweenDates = (slice: [number, number], size: number): number[] => {
   const boundaries = []
-  let startOfDay = new Date(start)
+  let startOfDay = new Date(slice[0])
   startOfDay = new Date(startOfDay.getFullYear(), startOfDay.getMonth(), startOfDay.getDate())
   let t = startOfDay.getTime()
-  while (t <= end) {
-    if (t >= start) {
+  while (t <= slice[1]) {
+    if (t >= slice[0]) {
       boundaries.push(t)
     }
     t += size

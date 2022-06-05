@@ -3,23 +3,22 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import { getTimeMarksBetweenDates } from 'src/util/dates'
 
 interface TimelineScaleProps {
-  startTime: number
-  endTime: number
+  slice: [number, number]
 }
 
-const TimelineScale = ({ startTime, endTime }: TimelineScaleProps) => {
-  const length = endTime - startTime
-  const dayLabels = getTimeMarksBetweenDates(startTime, endTime, 86400000)
-  const timeLabels = getTimeMarksBetweenDates(startTime, endTime, 2 * 3600000)
-  const highBoundaries = getTimeMarksBetweenDates(startTime, endTime, 3600000)
-  const lowBoundaries = getTimeMarksBetweenDates(startTime, endTime, 900000)
+const TimelineScale = ({ slice }: TimelineScaleProps) => {
+  const length = slice[1] - slice[0]
+  const dayLabels = getTimeMarksBetweenDates(slice, 86400000)
+  const timeLabels = getTimeMarksBetweenDates(slice, 2 * 3600000)
+  const highBoundaries = getTimeMarksBetweenDates(slice, 3600000)
+  const lowBoundaries = getTimeMarksBetweenDates(slice, 900000)
 
   return (
     <div id="scale">
       <div className="legend" />
       <div className="lines">
         {dayLabels.map(b => {
-          const style = { left: (b - startTime) * 100 / length + '%' }
+          const style = { left: (b - slice[0]) * 100 / length + '%' }
           return (
             <div key={b} className="scale-entry major" style={style}>
               <FormattedDate value={b} year="numeric" month="2-digit" day="2-digit" />
@@ -27,7 +26,7 @@ const TimelineScale = ({ startTime, endTime }: TimelineScaleProps) => {
           )
         })}
         {timeLabels.map(b => {
-          const style = { left: (b - startTime) * 100 / length + '%' }
+          const style = { left: (b - slice[0]) * 100 / length + '%' }
           return (
             <div key={b} className="scale-entry minor" style={style}>
               <FormattedTime value={b} hour="2-digit" minute="2-digit" hour12={false} />
@@ -35,11 +34,11 @@ const TimelineScale = ({ startTime, endTime }: TimelineScaleProps) => {
           )
         })}
         {highBoundaries.map(b => {
-          const style = { left: (b - startTime) * 100 / length + '%' }
+          const style = { left: (b - slice[0]) * 100 / length + '%' }
           return <div key={b} className="scale-mark high" style={style} />
         })}
         {lowBoundaries.map(b => {
-          const style = { left: (b - startTime) * 100 / length + '%' }
+          const style = { left: (b - slice[0]) * 100 / length + '%' }
           return <div key={b} className="scale-mark low" style={style} />
         })}
       </div>

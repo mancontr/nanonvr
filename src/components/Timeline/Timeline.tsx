@@ -4,8 +4,7 @@ import './Timeline.sass'
 import TimelineScale from './TimelineScale'
 
 const Timeline = () => {
-  const [startTime] = useState(1653343200000)
-  const [endTime] = useState(1653429600000)
+  const [slice] = useState<[number, number]>([1653343200000, 1653429600000])
 
   return (
     <div id="timeline">
@@ -13,9 +12,9 @@ const Timeline = () => {
         <div className="button play" />
         <div className="button stop" />
       </div>
-      <TimelineScale startTime={startTime} endTime={endTime} />
+      <TimelineScale slice={slice} />
       <Suspense fallback={false}>
-        <TimelineLayers startTime={startTime} endTime={endTime} />
+        <TimelineLayers slice={slice} />
       </Suspense>
     </div>
   )

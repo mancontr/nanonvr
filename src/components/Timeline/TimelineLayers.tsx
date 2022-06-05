@@ -4,11 +4,10 @@ import CameraRecords from './CameraRecords'
 import './Timeline.sass'
 
 interface TimelineLayersProps {
-  startTime: number
-  endTime: number
+  slice: [number, number]
 }
 
-const TimelineLayers = ({ startTime, endTime }: TimelineLayersProps) => {
+const TimelineLayers = ({ slice }: TimelineLayersProps) => {
   const cameras = useCameras()
   return (
     <div id="layers">
@@ -22,7 +21,7 @@ const TimelineLayers = ({ startTime, endTime }: TimelineLayersProps) => {
       <div className="lines">
         {cameras.map(cam =>
           <Suspense key={cam.uuid} fallback={<div className="layer-entry" />}>
-            <CameraRecords cam={cam.uuid} startTime={startTime} endTime={endTime} />
+            <CameraRecords cam={cam.uuid} slice={slice} />
           </Suspense>
         )}
       </div>
