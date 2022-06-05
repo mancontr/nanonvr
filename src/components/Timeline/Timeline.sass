@@ -27,6 +27,23 @@
     .lines
       background-color: #171924
       border-bottom: 1px solid #fff
+      overflow: hidden
+      position: relative
+      .scale-entry
+        position: absolute
+        font-size: 10px
+        &.major
+          color: #5dbaf8
+        &.minor
+          top: 10px
+      .scale-mark
+        border-left: 1px solid #fff
+        bottom: 0
+        position: absolute
+        &.high
+          height: 8px
+        &.low
+          height: 3px
 
   #layers
     flex: 1 1 auto
@@ -37,6 +54,7 @@
     border-bottom: 1px solid #555
     height: 40px
     line-height: 40px
+    overflow: hidden
     padding-left: 10px
 
     &:first-child

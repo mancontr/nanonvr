@@ -1,6 +1,7 @@
 import React, { Suspense, useState } from 'react'
 import TimelineLayers from './TimelineLayers'
 import './Timeline.sass'
+import TimelineScale from './TimelineScale'
 
 const Timeline = () => {
   const [startTime] = useState(1653343200000)
@@ -12,10 +13,7 @@ const Timeline = () => {
         <div className="button play" />
         <div className="button stop" />
       </div>
-      <div id="scale">
-        <div className="legend" />
-        <div className="lines" />
-      </div>
+      <TimelineScale startTime={startTime} endTime={endTime} />
       <Suspense fallback={false}>
         <TimelineLayers startTime={startTime} endTime={endTime} />
       </Suspense>

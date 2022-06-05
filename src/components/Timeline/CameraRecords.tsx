@@ -1,6 +1,6 @@
 import React from 'react'
 import { useCameraTracks } from 'src/hooks/api'
-import { trackAddDates } from 'src/util/tracks'
+import { trackAddDates } from 'src/util/dates'
 
 interface CameraRecordsProps {
   cam: string

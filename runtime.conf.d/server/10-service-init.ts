@@ -5,5 +5,5 @@ import * as ffmpeg from 'src/server/services/ffmpeg'
 export const startup = () => {
   db.initialize()
   fswatch.start()
-  ffmpeg.startRecordingAll()
+  if (false) ffmpeg.startRecordingAll()
 }
