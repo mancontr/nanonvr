@@ -9,7 +9,7 @@ export const trackAddDates = (track: Track) => {
     parseInt(track.filename.substring(14, 16)),
     parseInt(track.filename.substring(17, 19)),
   ).getTime()
-  const end = start + track.length
+  const end = start + track.length * 1000
   return { ...track, start, end }
 }
 
