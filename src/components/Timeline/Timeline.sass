@@ -9,7 +9,7 @@
     flex: 0 0 30px
     line-height: 30px
     display: flex
-    justify-content: center
+    justify-content: space-between
 
   .legend
     background-color: #0f1d32
@@ -78,8 +78,18 @@
     margin: 5px
     text-align: center
     width: 30px
+    height: 30px
 
     &.play::before
       content: '\25B6'
     &.stop::before
       content: '\25FB'
+
+    &.left::before
+      content: '\1F844'
+    &.right::before
+      content: '\1F846'
+    &.zoom-in::before
+      content: '\1F50D+'
+    &.zoom-out::before
+      content: '\1F50D-'

@@ -33,3 +33,15 @@ export const trackAddDates = (track: Track) => {
   }
   return boundaries
 }
+
+/**
+ * Returns the timestamp of the start and end of the day on which around date falls
+ * @param around A timestamp to use as reference (default: now)
+ * @returns Timestamps for the beginning and end of the day
+ */
+export const getDayPeriod = (around?: Date): [number, number] => {
+  const now = around || new Date()
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+  return [start.getTime(), end.getTime()]
+}
