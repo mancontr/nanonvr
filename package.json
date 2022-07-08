@@ -17,7 +17,7 @@
     "react-redux": "^7.2.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "universal-scripts": "^2.6.12",
+    "universal-scripts": "^2.7.0",
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -30,8 +30,5 @@
   },
   "engines": {
     "node": ">=7.6"
-  },
-  "universalOptions": {
-    "noSsr": true
   }
 }
