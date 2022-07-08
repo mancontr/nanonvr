@@ -1,1 +1,1 @@
-export const dataDir: string = process.env.DATA_DIR || './data'
+export const dataDir: string = process.env.DATA_DIR || './data/nanonvr'

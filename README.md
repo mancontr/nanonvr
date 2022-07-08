@@ -8,7 +8,6 @@ Let your camera do the work.
 ## Features
 
 - Passthrough recording (with anything ffmpeg can handle)
-- ONVIF discovery & events
 
 That's all! We will not implement transcoding, motion detection, or any other
 advanced features that your camera should be doing instead.
