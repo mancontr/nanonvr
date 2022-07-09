@@ -7,6 +7,6 @@
 
 export const serverMiddleware = (ctx, next) => {
   const ingress = ctx.request.headers['x-ingress-path']
-  if (ingress) ctx.basename = ingress
+  if (ingress) ctx.basename = ingress + '/'
   return next()
 }
