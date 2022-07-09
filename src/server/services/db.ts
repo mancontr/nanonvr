@@ -2,9 +2,9 @@ import path from 'path'
 import SqliteDatabase from 'better-sqlite3'
 import { v4 as uuid } from 'uuid'
 import { Camera, Track } from 'src/types'
-import { dataDir } from 'src/config'
+import { dbDir } from 'src/config'
 
-const defaultPath = path.join(dataDir, 'data.db')
+const defaultPath = path.join(dbDir, 'data.db')
 
 export class Database {
   db: SqliteDatabase = null
