@@ -11207,10 +11207,10 @@ unique-slug@^2.0.0:
   dependencies:
     imurmurhash "^0.1.4"
 
-universal-scripts@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/universal-scripts/-/universal-scripts-2.7.1.tgz#bfdf44afad6e4ad99b26e921ab6bbe5e26f01069"
-  integrity sha512-gB2Qkxo0e3rfxqAhx53yIgKmpH3MiI7kfnIUQTHqoKOHWyUH5K5iIJWhJuFCQV463+qlpbOgV8CG+BHCDDm+Cg==
+universal-scripts@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/universal-scripts/-/universal-scripts-2.7.2.tgz#f6faf3c4cb535a1fb65293b0ba82dc32740ff9a9"
+  integrity sha512-Vplr6kLydM7hxehtozt3MCzyYkH0d6nppODUOqRKitQRuaz62ScqqSH8HKoqMt/hjeOh1H6aj37I2OFyKnWKUQ==
   dependencies:
     "@babel/core" "^7.12.10"
     "@babel/plugin-transform-runtime" "^7.12.10"
