@@ -1,0 +1,16 @@
+# Config to run as Home Assistant addon
+name: "NanoNVR"
+description: "The tiniest NVR."
+version: "0.1.0"
+slug: "nanonvr"
+url: "https://github.com/mancontr/nanonvr"
+init: false
+ingress: true
+map:
+  - share:rw
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
