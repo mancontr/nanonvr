@@ -6,12 +6,24 @@ import * as ffmpeg from 'src/server/services/ffmpeg'
 import { Track } from 'src/types'
 
 export const start = () => {
+  let initialFiles = []
+  let isReady = false
+
   chokidar
     .watch(dataDir, { alwaysStat: true })
+    .on('ready', () => {
+      isReady = true
+      // TODO: Do something with these files
+      initialFiles = null // Clean up list
+    })
     .on('add', (path, stat) => {
       if (!path.endsWith('.mp4')) return // Only watch for videos
-      handleFile(path, stat)
-        .catch(e => console.warn(e))
+      if (isReady) {
+        handleFile(path, stat)
+          .catch(e => console.warn(e))
+      } else {
+        initialFiles.push([path, stat])
+      }
     })
 }
 
