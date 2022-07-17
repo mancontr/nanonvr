@@ -1,13 +1,15 @@
 import React, { Suspense } from 'react'
 import { useCameras } from 'src/hooks/api'
+import { Track } from 'src/types'
 import CameraRecords from './CameraRecords'
 import './Timeline.sass'
 
 interface TimelineLayersProps {
   slice: [number, number]
+  setTrack: (track: Track) => void
 }
 
-const TimelineLayers = ({ slice }: TimelineLayersProps) => {
+const TimelineLayers = ({ slice, setTrack }: TimelineLayersProps) => {
   const cameras = useCameras()
   return (
     <div id="layers">
@@ -21,7 +23,7 @@ const TimelineLayers = ({ slice }: TimelineLayersProps) => {
       <div className="lines">
         {cameras.map(cam =>
           <Suspense key={cam.uuid} fallback={<div className="layer-entry" />}>
-            <CameraRecords cam={cam.uuid} slice={slice} />
+            <CameraRecords cam={cam.uuid} slice={slice} setTrack={setTrack} />
           </Suspense>
         )}
       </div>
