@@ -2,13 +2,17 @@ import fs from 'fs'
 import path from 'path'
 import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
-import * as ffmpeg from 'src/server/services/ffmpeg'
 import { Track } from 'src/types'
+import getMp4Length from 'src/util/getMp4Length'
 
 export const start = () => {
   const worker = async () => {
     while(true) {
-      await handleUpdateAll()
+      try {
+        await handleUpdateAll()
+      } catch (e) {
+        console.error(e)
+      }
       await new Promise(resolve => setTimeout(resolve, 10000))
     }
   }
@@ -55,14 +59,14 @@ const handleUpdate = async (camId: string): Promise<void> => {
     db.addTrack(camId, {
       ...file,
       uuid: camId,
-      length: await ffmpeg.getVideoLength(file.filepath)
+      length: getMp4Length(file.filepath)
     })
   }
   for (const file of updated) {
     db.updateTrack(camId, file.filename, {
       ...file,
       uuid: camId,
-      length: await ffmpeg.getVideoLength(file.filepath)
+      length: getMp4Length(file.filepath)
     })
   }
 }
@@ -76,6 +80,7 @@ interface TrackFileInfo {
 const getFolderFiles = (folder: string): TrackFileInfo[] =>
   fs.readdirSync(folder)
     .filter(filename => filename.endsWith('.mp4')) // Only videos
+    .sort((a, b) => a < b ? 1 : -1) // newest first
     .map(filename => {
       const filepath = path.join(folder, filename)
       const stats = fs.statSync(filepath)
