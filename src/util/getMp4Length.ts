@@ -1,4 +1,4 @@
-import fs from 'fs'
+import { promises as fs } from 'fs'
 
 const knownTypes = new Set([
   'ftyp', 'moov', 'mvhd', 'trak', 'tkhd', 'mdia', 'mdhd', 'hdlr', 'minf',
@@ -14,15 +14,18 @@ const knownTypes = new Set([
  * @param filename The video file
  * @returns The length in seconds
  */
-function getMp4Length (filename: string): number {
+async function getMp4Length (filename: string): Promise<number> {
   const buffer = Buffer.alloc(1024)
   let pos = 0
   let length = 0
   let timescale = 12800
   let defaultDuration = 0
-  const file = fs.openSync(filename, 'r')
+  const file = await fs.open(filename, 'r')
   try {
-    while (fs.readSync(file, buffer, 0, 1024, pos)) {
+    while (true) {
+      const res = await file.read(buffer, 0, 1024, pos)
+      if (!res || res?.bytesRead < 8) break
+
       const size = buffer.readInt32BE(0)
       const type = buffer.toString('utf8', 4, 8)
       const next = buffer.toString('utf8', 12, 16)
@@ -70,7 +73,7 @@ function getMp4Length (filename: string): number {
     console.warn(e)
     return 0
   } finally {
-    fs.closeSync(file)
+    await file.close()
   }
 }
 

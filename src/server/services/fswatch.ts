@@ -59,14 +59,14 @@ const handleUpdate = async (camId: string): Promise<void> => {
     db.addTrack(camId, {
       ...file,
       uuid: camId,
-      length: getMp4Length(file.filepath)
+      length: await getMp4Length(file.filepath)
     })
   }
   for (const file of updated) {
     db.updateTrack(camId, file.filename, {
       ...file,
       uuid: camId,
-      length: getMp4Length(file.filepath)
+      length: await getMp4Length(file.filepath)
     })
   }
 }
