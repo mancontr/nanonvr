@@ -11,7 +11,7 @@ const Home = () => {
   return (
     <main id="home">
       <Feeds track={track}/>
-      <Timeline setTrack={setTrack} />
+      <Timeline track={track} setTrack={setTrack} />
     </main>
   )
 }

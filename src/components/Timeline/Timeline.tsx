@@ -7,15 +7,16 @@ import './Timeline.sass'
 import { Track } from 'src/types'
 
 interface TimelineProps {
+  track: Track
   setTrack: (track: Track) => void
 }
 
-const Timeline = ({ setTrack }: TimelineProps) => {
+const Timeline = ({ track, setTrack }: TimelineProps) => {
   const [slice, setSlice] = useState<[number, number]>(getDayPeriod)
 
   return (
     <div id="timeline">
-      <Controls slice={slice} setSlice={setSlice} />
+      <Controls slice={slice} setSlice={setSlice} track={track} />
       <TimelineScale slice={slice} />
       <Suspense fallback={false}>
         <TimelineLayers slice={slice} setTrack={setTrack} />

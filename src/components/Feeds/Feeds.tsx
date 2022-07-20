@@ -8,11 +8,12 @@ interface FeedsProps {
 }
 
 const Feeds = ({ track }: FeedsProps) => {
+  const url = track && `${baseUrl}/media/${track.uuid}/${track.filename}`
   return (
     <div id="feeds">
       {track &&
         <video key={track.uuid + '/' + track.filename} autoPlay>
-          <source src={`${baseUrl}/media/${track.uuid}/${track.filename}`} />
+          <source src={url} />
         </video>
       }
       {!track &&
