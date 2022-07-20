@@ -29,6 +29,9 @@ async function getMp4Length (filename: string): Promise<number> {
       const size = buffer.readInt32BE(0)
       const type = buffer.toString('utf8', 4, 8)
       const next = buffer.toString('utf8', 12, 16)
+
+      if (size === 0) break
+
       if (type === 'mdhd') {
         timescale = buffer.readUInt32BE(20)
         const duration = buffer.readUInt32BE(24)
@@ -68,6 +71,7 @@ async function getMp4Length (filename: string): Promise<number> {
         pos += size
       }
     }
+    console.log('Len:', length / timescale)
     return length / timescale
   } catch (e) {
     console.warn(e)
