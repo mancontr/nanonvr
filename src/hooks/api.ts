@@ -1,8 +1,6 @@
 import { useCRUD, useFetch } from '@gluedigital/ruse-fetch-extras'
 import { Camera, Track } from 'src/types'
-import { baseUrl } from 'src/config'
-
-const base = baseUrl + '/api'
+import { apiBaseUrl as base } from 'src/config'
 
 export const useCameras = () => useFetch<Camera[]>(base + '/cameras', null, 'cams')
 export const useCamera = (id: string) => useFetch<Camera>(id && (base + '/cameras/' + id), null, 'cam-' + id)

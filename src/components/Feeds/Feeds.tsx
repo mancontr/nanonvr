@@ -1,5 +1,5 @@
 import React from 'react'
-import { baseUrl } from 'src/config'
+import { useBasePath } from 'src/hooks/config'
 import { Track } from 'src/types'
 import './Feeds.sass'
 
@@ -8,6 +8,7 @@ interface FeedsProps {
 }
 
 const Feeds = ({ track }: FeedsProps) => {
+  const baseUrl = useBasePath()
   const url = track && `${baseUrl}/media/${track.uuid}/${track.filename}`
   return (
     <div id="feeds">

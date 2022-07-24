@@ -1,6 +1,6 @@
 import React from 'react'
+import { useBasePath } from 'src/hooks/config'
 import { Track } from 'src/types'
-import { baseUrl } from 'src/config'
 
 interface ControlsProps {
   slice: [number, number]
@@ -9,6 +9,7 @@ interface ControlsProps {
 }
 
 const Controls = ({ slice, setSlice, track }: ControlsProps) => {
+  const baseUrl = useBasePath()
   const size = slice[1] - slice[0]
   const next = () => setSlice([slice[0] + size / 2, slice[1] + size / 2])
   const prev = () => setSlice([slice[0] - size / 2, slice[1] - size / 2])

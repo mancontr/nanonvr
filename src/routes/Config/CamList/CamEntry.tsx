@@ -1,13 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useBasePath } from 'src/hooks/config'
 import { Camera } from 'src/types'
-import { baseUrl } from 'src/config'
 
 interface CamEntryProps {
   cam: Camera
 }
 
 const CamEntry = ({ cam }: CamEntryProps) => {
+  const baseUrl = useBasePath()
   const style: any = {}
   if (cam.snapshot) style.backgroundImage = `url("${baseUrl}/api/cameras/${cam.uuid}/snapshot")`
   return (
