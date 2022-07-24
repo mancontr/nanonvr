@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { useCameras } from 'src/hooks/api'
 import { Track } from 'src/types'
+import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
 import './Timeline.sass'
 
@@ -31,4 +32,17 @@ const TimelineLayers = ({ slice, setTrack }: TimelineLayersProps) => {
   )
 }
 
-export default TimelineLayers
+const TimelineLayersPlaceholder = () =>
+  <div id="layers" className="placeholder">
+    <div className="legend">
+      <Loading />
+    </div>
+    <div className="lines" />
+  </div>
+
+const TimelineLayersWrapper = (props: TimelineLayersProps) =>
+  <Suspense fallback={<TimelineLayersPlaceholder />}>
+    <TimelineLayers {...props} />
+  </Suspense>
+
+export default TimelineLayersWrapper

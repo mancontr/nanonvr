@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import { getDayPeriod } from 'src/util/dates'
 import TimelineLayers from './TimelineLayers'
 import TimelineScale from './TimelineScale'
@@ -18,9 +18,7 @@ const Timeline = ({ track, setTrack }: TimelineProps) => {
     <div id="timeline">
       <Controls slice={slice} setSlice={setSlice} track={track} />
       <TimelineScale slice={slice} />
-      <Suspense fallback={false}>
-        <TimelineLayers slice={slice} setTrack={setTrack} />
-      </Suspense>
+      <TimelineLayers slice={slice} setTrack={setTrack} />
     </div>
   )
 }

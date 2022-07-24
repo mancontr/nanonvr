@@ -45,11 +45,21 @@
           height: 8px
         &.low
           height: 3px
+    .legend
+      border-bottom: 1px solid #555
 
   #layers
     flex: 1 1 auto
     display: flex
-    min-height: 80px
+    min-height: 41px
+
+    &.placeholder
+      height: 41px
+      overflow: hidden
+      .loading:before
+        height: 32px
+        width: 32px
+        margin: 4px
 
   .layer-entry
     border-bottom: 1px solid #555
@@ -57,9 +67,6 @@
     line-height: 40px
     overflow: hidden
     padding-left: 10px
-
-    &:first-child
-      border-top: 1px solid #555
 
   .lines .layer-entry
     position: relative
