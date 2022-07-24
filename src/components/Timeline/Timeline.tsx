@@ -4,21 +4,21 @@ import TimelineLayers from './TimelineLayers'
 import TimelineScale from './TimelineScale'
 import Controls from './Controls'
 import './Timeline.sass'
-import { Track } from 'src/types'
+import { PlayPoint } from 'src/types'
 
 interface TimelineProps {
-  track: Track
-  setTrack: (track: Track) => void
+  playPoint: PlayPoint
+  setPlayPoint: (playPoint: PlayPoint) => void
 }
 
-const Timeline = ({ track, setTrack }: TimelineProps) => {
+const Timeline = ({ playPoint, setPlayPoint }: TimelineProps) => {
   const [slice, setSlice] = useState<[number, number]>(getDayPeriod)
 
   return (
     <div id="timeline">
-      <Controls slice={slice} setSlice={setSlice} track={track} />
+      <Controls slice={slice} setSlice={setSlice} playPoint={playPoint} />
       <TimelineScale slice={slice} />
-      <TimelineLayers slice={slice} setTrack={setTrack} />
+      <TimelineLayers slice={slice} currentCamera={playPoint?.camId} setPlayPoint={setPlayPoint} />
     </div>
   )
 }

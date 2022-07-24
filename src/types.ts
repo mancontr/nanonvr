@@ -12,3 +12,8 @@ export interface Track {
   filesize: number
   length: number
 }
+
+export interface PlayPoint {
+  camId: string
+  ts: number
+}

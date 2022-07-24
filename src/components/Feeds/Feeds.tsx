@@ -1,13 +1,16 @@
 import React from 'react'
 import { useBasePath } from 'src/hooks/config'
-import { Track } from 'src/types'
+import { useTrackFromPlayPoint } from 'src/hooks/playback'
+import { PlayPoint, Track } from 'src/types'
 import './Feeds.sass'
 
 interface FeedsProps {
-  track?: Track
+  playPoint?: PlayPoint
 }
 
-const Feeds = ({ track }: FeedsProps) => {
+const Feeds = ({ playPoint }: FeedsProps) => {
+  const track: Track = useTrackFromPlayPoint(playPoint)
+
   const baseUrl = useBasePath()
   const url = track && `${baseUrl}/media/${track.uuid}/${track.filename}`
   return (

@@ -1,22 +1,23 @@
 import React, { Suspense } from 'react'
 import { useCameras } from 'src/hooks/api'
-import { Track } from 'src/types'
+import { PlayPoint } from 'src/types'
 import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
 import './Timeline.sass'
 
 interface TimelineLayersProps {
   slice: [number, number]
-  setTrack: (track: Track) => void
+  currentCamera: string
+  setPlayPoint: (playPoint: PlayPoint) => void
 }
 
-const TimelineLayers = ({ slice, setTrack }: TimelineLayersProps) => {
+const TimelineLayers = ({ slice, currentCamera, setPlayPoint }: TimelineLayersProps) => {
   const cameras = useCameras()
   return (
     <div id="layers">
       <div className="legend">
         {cameras.map(cam =>
-          <div className="layer-entry" key={cam.uuid}>
+          <div className={'layer-entry' + (cam.uuid === currentCamera ? ' active' : '')} key={cam.uuid}>
             {cam.name}
           </div>
         )}
@@ -24,7 +25,7 @@ const TimelineLayers = ({ slice, setTrack }: TimelineLayersProps) => {
       <div className="lines">
         {cameras.map(cam =>
           <Suspense key={cam.uuid} fallback={<div className="layer-entry" />}>
-            <CameraRecords cam={cam.uuid} slice={slice} setTrack={setTrack} />
+            <CameraRecords cam={cam.uuid} slice={slice} active={cam.uuid === currentCamera} setPlayPoint={setPlayPoint} />
           </Suspense>
         )}
       </div>
