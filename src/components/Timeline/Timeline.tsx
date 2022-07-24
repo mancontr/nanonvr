@@ -17,8 +17,8 @@ const Timeline = ({ playPoint, setPlayPoint }: TimelineProps) => {
   return (
     <div id="timeline">
       <Controls slice={slice} setSlice={setSlice} playPoint={playPoint} />
-      <TimelineScale slice={slice} />
-      <TimelineLayers slice={slice} currentCamera={playPoint?.camId} setPlayPoint={setPlayPoint} />
+      <TimelineScale slice={slice} playPoint={playPoint} />
+      <TimelineLayers slice={slice} playPoint={playPoint} setPlayPoint={setPlayPoint} />
     </div>
   )
 }

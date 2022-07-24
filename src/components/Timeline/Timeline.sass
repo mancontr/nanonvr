@@ -19,7 +19,7 @@
   .lines
     background-color: #202534
     flex: 1 1 auto
-
+    position: relative
 
   #scale
     flex: 0 0 30px
@@ -29,7 +29,6 @@
       border-bottom: 1px solid #fff
       overflow: hidden
       pointer-events: none
-      position: relative
       .scale-entry
         position: absolute
         font-size: 10px
@@ -45,6 +44,15 @@
           height: 8px
         &.low
           height: 3px
+      .needle
+        position: absolute
+        bottom: 0
+        width: 0
+        height: 0
+        border-left: 8px solid transparent
+        border-right: 8px solid transparent
+        border-top: 8px solid #f00
+        margin-left: -8px
     .legend
       border-bottom: 1px solid #555
 
@@ -60,6 +68,12 @@
         height: 32px
         width: 32px
         margin: 4px
+
+    .needle
+      position: absolute
+      top: 0
+      bottom: 0
+      border-left: 1px solid #f00
 
   .layer-entry
     border-bottom: 1px solid #555

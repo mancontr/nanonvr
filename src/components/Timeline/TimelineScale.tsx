@@ -1,12 +1,14 @@
 import React from 'react'
 import { FormattedDate, FormattedTime } from 'react-intl'
+import { PlayPoint } from 'src/types'
 import { getTimeMarksBetweenDates } from 'src/util/dates'
 
 interface TimelineScaleProps {
   slice: [number, number]
+  playPoint: PlayPoint
 }
 
-const TimelineScale = ({ slice }: TimelineScaleProps) => {
+const TimelineScale = ({ slice, playPoint }: TimelineScaleProps) => {
   const length = slice[1] - slice[0]
   const dayLabels = getTimeMarksBetweenDates(slice, 86400000)
   const timeLabels = getTimeMarksBetweenDates(slice, 2 * 3600000)
@@ -41,6 +43,12 @@ const TimelineScale = ({ slice }: TimelineScaleProps) => {
           const style = { left: (b - slice[0]) * 100 / length + '%' }
           return <div key={b} className="scale-mark low" style={style} />
         })}
+        {playPoint &&
+          <div
+            className="needle"
+            style={{ left: (playPoint.ts - slice[0]) * 100 / length + '%' }}
+          />
+        }
       </div>
     </div>
   )
