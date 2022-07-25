@@ -2,7 +2,6 @@
   display: flex
   flex-direction: column
   align-items: stretch
-  margin-top: 10px
 
   #controls
     background-color: #202534
@@ -97,7 +96,6 @@
       height: 30px
       top: 5px
 
-
   .button
     border: 1px solid #5a5f68
     cursor: pointer
@@ -106,24 +104,9 @@
     text-align: center
     width: 30px
     height: 30px
+    line-height: 30px
 
     &.disabled
       cursor: not-allowed
       pointer-events: none
       background-color: #1b1c1c
-
-    &.play::before
-      content: '\25B6'
-    &.stop::before
-      content: '\25FB'
-    &.download::before
-      content: '\21D3'
-
-    &.left::before
-      content: '\1F844'
-    &.right::before
-      content: '\1F846'
-    &.zoom-in::before
-      content: '\1F50D+'
-    &.zoom-out::before
-      content: '\1F50D-'
