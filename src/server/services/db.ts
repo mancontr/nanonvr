@@ -99,6 +99,19 @@ export class Database {
       .run([camId, filename])
   }
 
+  getTotalSize(): number {
+    return this.db
+      .prepare('SELECT SUM(filesize) AS size FROM track')
+      .get()
+      .size
+  }
+
+  getOldestTracks(): Track[] {
+    return this.db
+      .prepare('SELECT * FROM track ORDER BY filename ASC')
+      .all()
+  }
+
 }
 
 const db = new Database()
