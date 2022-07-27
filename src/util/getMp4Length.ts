@@ -15,7 +15,7 @@ const knownTypes = new Set([
  * @returns The length in seconds
  */
 async function getMp4Length (filename: string): Promise<number> {
-  const buffer = Buffer.alloc(1024)
+  const buffer = Buffer.alloc(2048)
   let pos = 0
   let length = 0
   let timescale = 12800
@@ -23,7 +23,7 @@ async function getMp4Length (filename: string): Promise<number> {
   const file = await fs.open(filename, 'r')
   try {
     while (true) {
-      const res = await file.read(buffer, 0, 1024, pos)
+      const res = await file.read(buffer, 0, 2048, pos)
       if (!res || res?.bytesRead < 8) break
 
       const size = buffer.readInt32BE(0)
