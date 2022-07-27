@@ -71,7 +71,6 @@ async function getMp4Length (filename: string): Promise<number> {
         pos += size
       }
     }
-    console.log('Len:', length / timescale)
     return length / timescale
   } catch (e) {
     console.warn(e)
