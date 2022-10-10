@@ -1,11 +1,15 @@
 import fs from 'fs'
 import path from 'path'
-import { dataDir, maxSize } from 'src/config'
+import { exec } from 'child_process'
+import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
 import { Track } from 'src/types'
 
+let hdSize: number = 0
+
 export const start = () => {
   const worker = async () => {
+    hdSize = await getHdSize()
     while(true) {
       try {
         await doCleanup()
@@ -18,11 +22,23 @@ export const start = () => {
   setTimeout(worker, 1000)
 }
 
+const getHdSize = async (): Promise<number> => {
+  const cmd = `df --output=size "${dataDir}"`
+  const out: string = await new Promise((resolve, reject) =>
+    exec(cmd, (err, text) => err ? reject(err) : resolve(text))
+  )
+  const size = out.split('\n')[1] // in K
+  const bytes = 1024 * parseFloat(size)
+  return bytes
+}
+
 /**
  * Checks if a video cleanup is required, according to the configuration.
  */
 const doCleanup = async (): Promise<void> => {
   const totalSize = db.getTotalSize()
+  const maxSize = (parseInt(db.getConfig('maxsize')) || 85) * hdSize / 100
+  console.log('We can use up to', maxSize, 'bytes, of which we are using', totalSize, 'bytes')
   if (maxSize > 0 && totalSize > maxSize) {
     const removeBytes = totalSize - maxSize
     const tracks = getUptoBytes(db.getOldestTracks(), removeBytes)

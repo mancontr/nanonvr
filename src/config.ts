@@ -11,6 +11,3 @@ export const apiBaseUrl: string = (__CLIENT__
   ? window.___INITIAL_STATE__?.base || ''
   : process.env.APP_URL || ('http://localhost:' + (process.env.PORT || '3000'))
 ) + '/api'
-
-// Max size of videos on disk (in GiB)
-export const maxSize: number = (parseInt(process.env.MAX_SIZE) || 0) * (1000**3)

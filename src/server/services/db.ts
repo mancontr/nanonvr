@@ -14,6 +14,7 @@ export class Database {
   }
 
   initialize() {
+    // Create tables
     this.db.prepare(`CREATE TABLE IF NOT EXISTS cam (
       uuid TEXT NOT NULL PRIMARY KEY,
       name TEXT NOT NULL,
@@ -28,6 +29,14 @@ export class Database {
       filesize INTEGER NOT NULL,
       length INTEGER NOT NULL
     )`).run()
+
+    this.db.prepare(`CREATE TABLE IF NOT EXISTS conf (
+      key TEXT NOT NULL PRIMARY KEY,
+      value TEXT
+    )`).run()
+
+    // Insert default config
+    this.db.prepare(`INSERT OR IGNORE INTO conf(key, value) VALUES(?, ?)`).run('maxdisk', '85')
   }
 
   // --- Cameras ---
@@ -110,6 +119,15 @@ export class Database {
     return this.db
       .prepare('SELECT * FROM track ORDER BY filename ASC')
       .all()
+  }
+
+  // --- Config ---
+
+  getConfig(key: string): string {
+    return this.db
+      .prepare('SELECT value FROM conf WHERE key = ?')
+      .get([key])
+      ?.value || 0
   }
 
 }
