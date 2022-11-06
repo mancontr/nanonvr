@@ -38,7 +38,7 @@ const getHdSize = async (): Promise<number> => {
 const doCleanup = async (): Promise<void> => {
   const totalSize = db.getTotalSize()
   const maxSize = (parseInt(db.getConfig('maxsize')) || 85) * hdSize / 100
-  console.log('We can use up to', maxSize, 'bytes, of which we are using', totalSize, 'bytes')
+  // console.log('We can use up to', maxSize, 'bytes, of which we are using', totalSize, 'bytes')
   if (maxSize > 0 && totalSize > maxSize) {
     const removeBytes = totalSize - maxSize
     const tracks = getUptoBytes(db.getOldestTracks(), removeBytes)

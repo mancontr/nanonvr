@@ -11,3 +11,6 @@ export const apiBaseUrl: string = (__CLIENT__
   ? window.___INITIAL_STATE__?.base || ''
   : process.env.APP_URL || ('http://localhost:' + (process.env.PORT || '3000'))
 ) + '/api'
+
+export const ftpPort: number = parseInt(process.env.FTP_PORT) || 21821
+export const ftpDataPort: number = parseInt(process.env.FTP_DATA_PORT) || 21822
