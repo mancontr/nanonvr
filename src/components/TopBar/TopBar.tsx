@@ -9,10 +9,22 @@ const TopBar = () => {
       <h1><FormattedMessage id="title" /></h1>
       <div className="sections">
         <NavLink to="/" exact>
-          <FormattedMessage id="topbar.home" />
+          <span className="icon icon-home" />
+          <span className="label">
+            <FormattedMessage id="topbar.home" />
+          </span>
+        </NavLink>
+        <NavLink to="/events">
+          <span className="icon icon-history" />
+          <span className="label">
+            <FormattedMessage id="topbar.events" />
+          </span>
         </NavLink>
         <NavLink to="/config">
-          <FormattedMessage id="topbar.config" />
+          <span className="icon icon-config" />
+          <span className="label">
+            <FormattedMessage id="topbar.config" />
+          </span>
         </NavLink>
       </div>
     </header>

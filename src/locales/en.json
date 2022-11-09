@@ -11,5 +11,6 @@
   "config.edit.save": "Save",
   "title": "NanoNVR",
   "topbar.config": "Config",
+  "topbar.events": "Events",
   "topbar.home": "Home"
 }
