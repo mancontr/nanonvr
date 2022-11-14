@@ -1,7 +1,7 @@
 import path from 'path'
 import SqliteDatabase from 'better-sqlite3'
 import { v4 as uuid } from 'uuid'
-import { Camera, Track } from 'src/types'
+import { Camera, Track, Event } from 'src/types'
 import { dbDir } from 'src/config'
 
 const defaultPath = path.join(dbDir, 'data.db')
@@ -28,6 +28,14 @@ export class Database {
       filename TEXT NOT NULL,
       filesize INTEGER NOT NULL,
       length INTEGER NOT NULL
+    )`).run()
+
+    this.db.prepare(`CREATE TABLE IF NOT EXISTS event (
+      uuid TEXT NOT NULL REFERENCES cam(uuid),
+      filename TEXT NOT NULL,
+      filesize INTEGER NOT NULL,
+      originalName TEXT NOT NULL,
+      isVideo BOOLEAN NOT NULL DEFAULT FALSE
     )`).run()
 
     this.db.prepare(`CREATE TABLE IF NOT EXISTS conf (
@@ -118,6 +126,27 @@ export class Database {
   getOldestTracks(): Track[] {
     return this.db
       .prepare('SELECT * FROM track ORDER BY filename ASC')
+      .all()
+  }
+
+  // --- Events ---
+
+  addEvent(camId: string, event: Event): Event {
+    this.db
+      .prepare('INSERT INTO event(uuid, filename, filesize, originalName, isVideo) values (?, ?, ?, ?, ?)')
+      .run([camId, event.filename, event.filesize, event.originalName, event.isVideo ? 1 : 0])
+    return { ...event, uuid: camId }
+  }
+
+  removeEvent(camId: string, filename: string): void {
+    this.db
+      .prepare('DELETE FROM event WHERE uuid = ? AND filename = ?')
+      .run([camId, filename])
+  }
+
+  getEvents(): Event[] {
+    return this.db
+      .prepare('SELECT * FROM event ORDER BY filename DESC')
       .all()
   }
 

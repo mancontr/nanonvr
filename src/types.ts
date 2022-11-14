@@ -13,6 +13,14 @@ export interface Track {
   length: number
 }
 
+export interface Event {
+  uuid: string
+  filename: string
+  filesize: number
+  originalName: string
+  isVideo: boolean
+}
+
 export interface PlayPoint {
   camId: string
   ts: number

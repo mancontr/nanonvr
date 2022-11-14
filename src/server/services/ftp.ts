@@ -104,6 +104,7 @@ const handleConnection = (socket: net.Socket) => {
 
 const handleDataConnection = (socket: net.Socket) => {
   const clientIp = socket.remoteAddress
+  const ts = Date.now()
   let state: FtpState = null
   let buffer: Buffer = null
 
@@ -124,14 +125,14 @@ const handleDataConnection = (socket: net.Socket) => {
   socket.on('end', () => {
     if (state?.socket) {
       state.socket.write('226 Transfer complete.\r\n')
-      handleFile(buffer, state.socket.remoteAddress, path.join(state.pwd, state.filename))
+      handleFile(buffer, ts, clientIp, path.join(state.pwd, state.filename))
     }
     buffer = null
   })
 
 }
 
-const handleFile = (buffer: Buffer, clientIp: string, filename: string) => {
+const handleFile = (buffer: Buffer, ts: number, clientIp: string, filename: string) => {
   const camera = db.getCameras().find(c => c.streamMain.includes(clientIp))
   if (!camera) {
     console.warn(`[ftp] Discarded file from unknown source: ${clientIp}:${filename}`)
@@ -142,12 +143,25 @@ const handleFile = (buffer: Buffer, clientIp: string, filename: string) => {
   fs.mkdirSync(folder, { recursive: true })
 
   let ext = filename.substring(filename.lastIndexOf('.') + 1)
-  if (ext.includes('/') || ext.length > 4 || !ext) ext = 'bin'
-  const date = new Date().toISOString()
+  if (ext.includes('/') || ext.length > 4 || !ext) ext = 'jpg'
+  ext = ext.toLowerCase()
+
+  const isVideo = ['mp4', 'mov', 'h264', 'avi', 'qt', 'wmv', 'flv', 'mkv', 'webm'].includes(ext)
+
+  const date = new Date(ts).toISOString()
     .replace(/[T.]/g, ' ')
     .replace(/[Z:\-]/g, '')
-  const destination = path.join(folder, date + '.' + ext)
+  const newExt = isVideo ? 'mp4' : 'jpg'
+  const newName = date + '.' + newExt
+  const destination = path.join(folder, newName)
 
   fs.writeFileSync(destination, buffer)
+  db.addEvent(camera.uuid, {
+    uuid: camera.uuid,
+    filename: newName,
+    filesize: buffer.byteLength,
+    originalName: filename,
+    isVideo: isVideo
+  })
   // console.log(`[ftp] Received file: ${clientIp}:${filename} ; saved at: ${destination}`)
 }

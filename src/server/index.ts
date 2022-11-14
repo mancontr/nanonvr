@@ -2,6 +2,7 @@ import Router from 'koa-router'
 import koaBody from 'koa-body'
 import * as cameras from './controllers/cameras'
 import * as tracks from './controllers/tracks'
+import * as events from './controllers/events'
 import * as media from './controllers/media'
 
 const router = new Router()
@@ -17,7 +18,10 @@ router.delete('/api/cameras/:id', cameras.removeCamera)
 
 router.get('/api/cameras/:id/tracks', tracks.getTracks)
 
-router.get('/media/:camId/:track', media.serve)
+router.get('/api/events', events.getEvents)
+
+router.get('/media/:camId/:track', media.serveTrack)
+router.get('/media/:camId/events/:event', media.serveEvent)
 
 router.all('/api/(.*)', ctx => {
   if (!ctx.body) ctx.throw(404, 'Not found')
