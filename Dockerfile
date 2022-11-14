@@ -1,7 +1,7 @@
 FROM node:14
 
 ENV DATA_DIR=/share/nanonvr PORT=8099
-EXPOSE 8099/tcp
+EXPOSE 8099/tcp 21821/tcp 21822/tcp
 VOLUME /share
 
 # Prepare dependencies
