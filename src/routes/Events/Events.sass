@@ -30,15 +30,16 @@
     white-space: nowrap
 
     .event-card
+      border: 1px solid transparent
       cursor: pointer
-      display: inline-block
+      display: inline-flex
       position: relative
       margin-right: 10px
       margin-bottom: 10px
 
       img, video
-        height: 120px
-        width: 180px
+        height: 108px
+        width: 192px
         object-fit: cover
 
       .overlay
@@ -52,3 +53,6 @@
         justify-content: center
         .icon-play
           font-size: 200%
+
+      &.active
+        border: 1px solid #ccc
