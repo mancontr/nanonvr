@@ -146,7 +146,7 @@ export class Database {
 
   getEvents(): Event[] {
     return this.db
-      .prepare('SELECT * FROM event ORDER BY filename DESC')
+      .prepare('SELECT * FROM event ORDER BY filename DESC LIMIT 100')
       .all()
   }
 
