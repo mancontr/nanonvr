@@ -8,12 +8,12 @@ export const dbDir: string = process.env.DB_DIR || '/data'
 
 // Basename
 export const basename = (__CLIENT__
-  ? window.frameElement ? new URL(window.frameElement.src).pathname : '/'
-  : (process.env.APP_URL || ('http://localhost:' + (process.env.PORT || '3000'))) + '/'
+  ? window.frameElement ? new URL(window.frameElement.src).pathname.slice(0, -1) : ''
+  : process.env.APP_URL || ('http://localhost:' + (process.env.PORT || '3000'))
 )
 
 // URL to perform API calls
-export const apiBaseUrl: string = basename + 'api'
+export const apiBaseUrl: string = basename + '/api'
 
 export const ftpPort: number = parseInt(process.env.FTP_PORT) || 21821
 export const ftpDataPort: number = parseInt(process.env.FTP_DATA_PORT) || 21822

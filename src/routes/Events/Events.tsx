@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
+import { basename } from 'src/config'
 import { useEvents } from 'src/hooks/api'
-import { useBasePath } from 'src/hooks/config'
 import { Event } from 'src/types'
 import './Events.sass'
 
@@ -48,8 +48,7 @@ interface EventCardProps {
 
 const EventCard = ({ event, isBig, active, ...other }: EventCardProps) => {
   const ref = useRef<any>()
-  const baseUrl = useBasePath()
-  const url = `${baseUrl}/media/${event.uuid}/events/${event.filename}`
+  const url = `${basename}/media/${event.uuid}/events/${event.filename}`
   const readableName = event.originalName.substring(event.originalName.lastIndexOf('/') + 1)
 
   let className = 'event-card ' + (event.isVideo ? 'video' : 'image')

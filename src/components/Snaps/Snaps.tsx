@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useRef } from 'react'
 import Loading from 'src/components/Loading/Loading'
+import { basename } from 'src/config'
 import { useCameras } from 'src/hooks/api'
-import { useBasePath } from 'src/hooks/config'
 import './Snaps.sass'
 
 const Snaps = (): JSX.Element => {
@@ -16,13 +16,12 @@ const Snaps = (): JSX.Element => {
 }
 
 const Snap = ({ cam }) => {
-  const baseUrl = useBasePath()
   const canvasRef = useRef<any>()
 
   useEffect(() => {
     let t = null
     const update = () => {
-      const url = cam && `${baseUrl}/api/cameras/${cam.uuid}/snapshot?t=${Date.now()}`
+      const url = cam && `${basename}/api/cameras/${cam.uuid}/snapshot?t=${Date.now()}`
       const img = new Image()
       img.onload = () => {
         const context = canvasRef.current.getContext('2d')

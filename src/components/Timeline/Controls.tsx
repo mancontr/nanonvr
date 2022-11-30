@@ -1,5 +1,5 @@
 import React from 'react'
-import { useBasePath } from 'src/hooks/config'
+import { basename } from 'src/config'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
 import { PlayPoint, Track } from 'src/types'
 
@@ -11,13 +11,12 @@ interface ControlsProps {
 
 const Controls = ({ slice, setSlice, playPoint }: ControlsProps) => {
   const track: Track = useTrackFromPlayPoint(playPoint)
-  const baseUrl = useBasePath()
   const size = slice[1] - slice[0]
   const next = () => setSlice([slice[0] + size / 2, slice[1] + size / 2])
   const prev = () => setSlice([slice[0] - size / 2, slice[1] - size / 2])
   const zoomIn = () => setSlice([slice[0] + size / 4, slice[1] - size / 4])
   const zoomOut = () => setSlice([slice[0] - size / 2, slice[1] + size / 2])
-  const url = track && `${baseUrl}/media/${track.uuid}/${track.filename}`
+  const url = track && `${basename}/media/${track.uuid}/${track.filename}`
 
   return (
     <div id="controls">
