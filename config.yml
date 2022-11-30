@@ -11,9 +11,10 @@ ports:
   21821/tcp: 21821
   21822/tcp: 21822
 ports_description:
-  21821/tcp: 'FTP Control connection port'
-  21822/tcp: 'FTP Data connection port'
+  21821/tcp: "FTP Control connection port"
+  21822/tcp: "FTP Data connection port"
 map:
+  - config:rw
   - share:rw
 arch:
   - aarch64

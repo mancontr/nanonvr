@@ -6,6 +6,11 @@ import { Track } from 'src/types'
 import getMp4Length from 'src/util/getMp4Length'
 
 export const start = () => {
+  // We're the first service, so ensure the dataDir exists already
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true })
+  }
+  // The worker will be watching forever the data dir
   const worker = async () => {
     while(true) {
       try {

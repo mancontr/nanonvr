@@ -1,12 +1,13 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
+import { basename } from 'src/config'
 import App from 'src/routes'
 
-declare var window: any
+
 
 const routerRoot = () => {
-  // Add basename if we got any
-  const basename = window.___INITIAL_STATE__?.base || undefined
+  // Add basename
+  console.log('Router basename:', basename)
   return (
     <BrowserRouter basename={basename}>
       <App />

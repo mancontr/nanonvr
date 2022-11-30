@@ -29,6 +29,9 @@
     "lint": "eslint src",
     "heroku-postbuild": "npm run build"
   },
+  "universalOptions": {
+    "noSsr": true
+  },
   "engines": {
     "node": ">=7.6"
   }
