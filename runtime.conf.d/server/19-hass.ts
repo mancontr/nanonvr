@@ -1,8 +1,13 @@
 import fs from 'fs'
 import path from 'path'
-import fetch from 'node-fetch'
+import { getSelfInfo } from 'src/server/services/hass'
 
 declare const __WATCH__: boolean, __SSR__: boolean
+
+interface HassAddonInfo {
+  ingress_url: string
+  // ... and many more
+}
 
 /*
  * When running as a Home Assistant add-on, we would like to use Ingress, so
@@ -11,23 +16,18 @@ declare const __WATCH__: boolean, __SSR__: boolean
  * Supervisor API.
  */
 
-const token: string = process.env.SUPERVISOR_TOKEN
-let hassInfo = null
-let index = null
-
+let hassInfo: HassAddonInfo = null
+let index: string = null
 
 export const startup = async () => {
-  // Fetch our own info
-  if (!token) return
-  const response = await fetch(`http://supervisor/addons/self/info`, {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  if (!response.ok) return
-  const data = await response.json()
-  hassInfo = data.data
+  try {
+    hassInfo = await getSelfInfo()
 
-  // If build mode, generate a static index using the newly obtained basename
-  if (!__WATCH__ && !__SSR__) index = genIndex()
+    // If build mode, generate a static index using the newly obtained basename
+    if (!__WATCH__ && !__SSR__) index = genIndex()
+  } catch (e) {
+    // Ignore silently (not on HASS?)
+  }
 }
 
 /*

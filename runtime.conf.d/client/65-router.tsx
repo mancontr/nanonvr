@@ -7,7 +7,6 @@ import App from 'src/routes'
 
 const routerRoot = () => {
   // Add basename
-  console.log('Router basename:', basename)
   return (
     <BrowserRouter basename={basename}>
       <App />

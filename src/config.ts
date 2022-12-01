@@ -15,5 +15,6 @@ export const basename = (__CLIENT__
 // URL to perform API calls
 export const apiBaseUrl: string = basename + '/api'
 
+// FTP settings
 export const ftpPort: number = parseInt(process.env.FTP_PORT) || 21821
 export const ftpDataPort: number = parseInt(process.env.FTP_DATA_PORT) || 21822
