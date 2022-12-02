@@ -28,6 +28,13 @@
     overflow-y: hidden
     white-space: nowrap
 
+    &::-webkit-scrollbar
+      height: 8px
+    &::-webkit-scrollbar-track
+      background-color: #222
+    &::-webkit-scrollbar-thumb
+      background-color: #444
+
     &::before, &::after
       content: ''
       display: inline-block
