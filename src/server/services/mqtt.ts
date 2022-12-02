@@ -67,7 +67,10 @@ export const sendEvent = (camId: string) => {
     client.publish(`nanonvr/cams/${camId}`, JSON.stringify({ 'state': 'ON' }))
   }
   // In both cases, set the reset timer
-  const reset = () => client.publish(`nanonvr/cams/${camId}`, JSON.stringify({ 'state': 'OFF' }))
+  const reset = () => {
+    timerMap.delete(camId)
+    client.publish(`nanonvr/cams/${camId}`, JSON.stringify({ 'state': 'OFF' }))
+  }
   const newTimer = setTimeout(reset, motionDuration)
   timerMap.set(camId, newTimer)
 }
