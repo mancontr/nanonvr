@@ -3,6 +3,7 @@ import net from 'net'
 import path from 'path'
 import { ftpPort, ftpDataPort, dataDir } from 'src/config'
 import db from './db'
+import { sendEvent } from './mqtt'
 
 let server: net.Server = null
 let dataServer: net.Server = null
@@ -163,5 +164,6 @@ const handleFile = (buffer: Buffer, ts: number, clientIp: string, filename: stri
     originalName: filename,
     isVideo: isVideo
   })
+  sendEvent(camera.uuid)
   // console.log(`[ftp] Received file: ${clientIp}:${filename} ; saved at: ${destination}`)
 }
