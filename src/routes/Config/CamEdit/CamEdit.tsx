@@ -68,12 +68,16 @@ const CamEdit = () => {
   )
 }
 
-const CamEditWrapper = () =>
-  <main id="config-cam-edit">
-    <h2><FormattedMessage id="config.edit.title" /></h2>
-    <Suspense fallback={<Loading />}>
-      <CamEdit />
-    </Suspense>
-  </main>
+const CamEditWrapper = () => {
+  const { id } = useParams()
+  return (
+    <main id="config-cam-edit">
+      <h2><FormattedMessage id={`config.edit.title-${id ? 'edit' : 'add'}`} /></h2>
+      <Suspense fallback={<Loading />}>
+        <CamEdit />
+      </Suspense>
+    </main>
+  )
+}
 
 export default CamEditWrapper
