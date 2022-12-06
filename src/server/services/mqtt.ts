@@ -40,7 +40,7 @@ export const syncCameras = async () => {
       },
       value_template: "{{ value_json.state }}"
     })
-    await client.publish(topic, body)
+    await client.publish(topic, body, { qos: 2 })
   }
 }
 
@@ -48,7 +48,11 @@ export const resetCameras = async () => {
   if (!client) return
   const cameras = db.getCameras()
   for (const camera of cameras) {
-    await client.publish(`nanonvr/cams/${camera.uuid}`, JSON.stringify({ 'state': 'OFF' }))
+    await client.publish(
+      `nanonvr/cams/${camera.uuid}`,
+      JSON.stringify({ 'state': 'OFF' }),
+      { qos: 2 }
+    )
   }
 }
 
@@ -57,20 +61,32 @@ const timerMap = new Map<string, NodeJS.Timeout>()
 const motionDuration = 60 * 1000
 
 // Send a motion event, and reset it after motionDuration ms (unless we get another event)
-export const sendEvent = (camId: string) => {
+export const sendEvent = async (camId: string) => {
   if (!client) return
   if (timerMap.has(camId)) {
     // Already has motion; replace existing timer (and don't send anything)
-    clearTimeout(timerMap.get(camId))
+    global.clearTimeout(timerMap.get(camId))
   } else {
     // No motion before; send status change
-    client.publish(`nanonvr/cams/${camId}`, JSON.stringify({ 'state': 'ON' }))
+    try {
+      await client.publish(
+        `nanonvr/cams/${camId}`,
+        JSON.stringify({ 'state': 'ON' }),
+        { qos: 2 }
+      )
+    } catch (e) {
+      console.warn('[MQTT] Could not send event:', e)
+      throw e
+    }
   }
   // In both cases, set the reset timer
   const reset = () => {
     timerMap.delete(camId)
-    client.publish(`nanonvr/cams/${camId}`, JSON.stringify({ 'state': 'OFF' }))
+    client.publish(
+      `nanonvr/cams/${camId}`,
+      JSON.stringify({ 'state': 'OFF' }),
+      { qos: 2 })
   }
-  const newTimer = setTimeout(reset, motionDuration)
+  const newTimer = global.setTimeout(reset, motionDuration)
   timerMap.set(camId, newTimer)
 }
