@@ -40,7 +40,7 @@ export const syncCameras = async () => {
       },
       value_template: "{{ value_json.state }}"
     })
-    await client.publish(topic, body, { qos: 2 })
+    await client.publish(topic, body, { qos: 2, retain: true })
   }
 }
 
