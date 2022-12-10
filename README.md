@@ -17,6 +17,8 @@ devices, such as a Raspberry, even if you're handling multiple 4k cameras.
 
 ## Usage
 
+If you'd like to use NanoNVR on your Home Assistant instance, check our [addons](https://github.com/mancontr/nanonvr-hass-addons) page.
+
 This is a standard Node project. The usual steps apply:
 
 ```sh

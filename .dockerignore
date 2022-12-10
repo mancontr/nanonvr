@@ -1,2 +1,12 @@
-data/
 node_modules/
+build/
+data/
+.DS_Store
+.env
+
+/.devcontainer.json
+/.vscode
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
