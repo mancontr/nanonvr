@@ -1,18 +1,20 @@
 {
   "name": "nanonvr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
+    "async-mqtt": "^2.6.3",
+    "better-sqlite3": "^7.5.3",
+    "koa-body": "^5.0.0",
+    "koa-router": "^10.1.1"
+  },
+  "devDependencies": {
     "@gluedigital/ruse-fetch-extras": "^1.2.6",
     "@types/jest": "^28.1.6",
     "@types/koa-router": "^7.4.4",
     "@types/sqlite3": "^3.1.8",
     "@types/uuid": "^8.3.4",
-    "async-mqtt": "^2.6.3",
-    "better-sqlite3": "^7.5.3",
     "chokidar": "^3.5.3",
-    "koa-body": "^5.0.0",
-    "koa-router": "^10.1.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-intl": "^5.8.6",
