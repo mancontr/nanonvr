@@ -34,7 +34,7 @@ export const startRecordingCam = (cam: Camera) => {
   const cmd = info.process = spawn('ffmpeg', [
     '-hide_banner',
     '-loglevel', 'error',
-    '-stimeout', '3000000',
+    // '-stimeout', '3000000',
     '-rtsp_transport', 'tcp',
     '-i', cam.streamMain,
     '-an',

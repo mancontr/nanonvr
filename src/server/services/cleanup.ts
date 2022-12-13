@@ -23,11 +23,11 @@ export const start = () => {
 }
 
 const getHdSize = async (): Promise<number> => {
-  const cmd = `df --output=size "${dataDir}"`
+  const cmd = `df -P "${dataDir}"`
   const out: string = await new Promise((resolve, reject) =>
     exec(cmd, (err, text) => err ? reject(err) : resolve(text))
   )
-  const size = out.split('\n')[1] // in K
+  const size = out.split('\n')[1].split(/ +/)[1] // in K
   const bytes = 1024 * parseFloat(size)
   return bytes
 }

@@ -1,5 +1,5 @@
 # Build the app only on build platform
-FROM --platform=$BUILDPLATFORM node:14 AS build
+FROM --platform=$BUILDPLATFORM node:14-alpine AS build
 WORKDIR /app/
 
 COPY package.json yarn.lock /app/
@@ -11,15 +11,15 @@ RUN yarn build
 
 # On other platforms, install only runtime dependencies
 # and copy build artifacts
-FROM node:14
+FROM node:14-alpine
 
-ENV DATA_DIR=/share/nanonvr PORT=8099
+ENV DATA_DIR=/share/nanonvr PORT=8099 PATH=/usr/local/bin:$PATH
 EXPOSE 8099/tcp 21821/tcp 21822/tcp
 VOLUME /share
 VOLUME /data
 
 # Prepare dependencies
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache ffmpeg tzdata
 
 WORKDIR /app/
 COPY package.json yarn.lock /app/
