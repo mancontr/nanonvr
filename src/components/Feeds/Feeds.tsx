@@ -1,14 +1,12 @@
 import React from 'react'
 import { basename } from 'src/config'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
-import { PlayPoint, Track } from 'src/types'
+import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
+import { Track } from 'src/types'
 import './Feeds.sass'
 
-interface FeedsProps {
-  playPoint?: PlayPoint
-}
-
-const Feeds = ({ playPoint }: FeedsProps) => {
+const Feeds = () => {
+  const playPoint = usePlayPoint()
   const track: Track = useTrackFromPlayPoint(playPoint)
 
   const url = track && `${basename}/media/${track.uuid}/${track.filename}`

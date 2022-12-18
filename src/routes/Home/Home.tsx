@@ -1,22 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Feeds from 'src/components/Feeds/Feeds'
-import SnapsWrapper from 'src/components/Snaps/Snaps'
+import Snaps from 'src/components/Snaps/Snaps'
 import Timeline from 'src/components/Timeline/Timeline'
-import { PlayPoint } from 'src/types'
 import './Home.sass'
+import { PlayPointProvider, usePlayPoint } from './PlayPointContext'
 
 const Home = () => {
-  const [playPoint, setPlayPoint] = useState<PlayPoint>()
+  const playPoint = usePlayPoint()
 
   return (
     <main id="home">
-      {playPoint
-        ? <Feeds playPoint={playPoint}/>
-        : <SnapsWrapper />
+      {playPoint?.ts
+        ? <Feeds />
+        : <Snaps  />
       }
-      <Timeline playPoint={playPoint} setPlayPoint={setPlayPoint} />
+      <Timeline />
     </main>
   )
 }
 
-export default Home
+const HomeWrapper = () =>
+  <PlayPointProvider>
+    <Home />
+  </PlayPointProvider>
+
+export default HomeWrapper

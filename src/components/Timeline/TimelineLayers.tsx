@@ -1,18 +1,17 @@
 import React, { Suspense } from 'react'
 import { useCameras } from 'src/hooks/api'
-import { PlayPoint } from 'src/types'
+import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
 import './Timeline.sass'
 
 interface TimelineLayersProps {
   slice: [number, number]
-  playPoint: PlayPoint
-  setPlayPoint: (playPoint: PlayPoint) => void
 }
 
-const TimelineLayers = ({ slice, playPoint, setPlayPoint }: TimelineLayersProps) => {
+const TimelineLayers = ({ slice }: TimelineLayersProps) => {
   const cameras = useCameras()
+  const [playPoint, setPlayPoint] = usePlayPointState()
   return (
     <div id="layers">
       <div className="legend">

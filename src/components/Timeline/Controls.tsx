@@ -1,16 +1,16 @@
 import React from 'react'
 import { basename } from 'src/config'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
-import { PlayPoint, Track } from 'src/types'
+import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
+import { Track } from 'src/types'
 
 interface ControlsProps {
   slice: [number, number]
   setSlice: (v: [number, number]) => void
-  playPoint: PlayPoint
-  setPlayPoint: (playPoint: PlayPoint) => void
 }
 
-const Controls = ({ slice, setSlice, playPoint, setPlayPoint }: ControlsProps) => {
+const Controls = ({ slice, setSlice }: ControlsProps) => {
+  const [playPoint, setPlayPoint] = usePlayPointState()
   const track: Track = useTrackFromPlayPoint(playPoint)
   const size = slice[1] - slice[0]
   const next = () => setSlice([slice[0] + size / 2, slice[1] + size / 2])
