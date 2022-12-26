@@ -3,15 +3,13 @@ import { useCameras } from 'src/hooks/api'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
+import { useSlice } from './SliceContext'
 import './Timeline.sass'
 
-interface TimelineLayersProps {
-  slice: [number, number]
-}
-
-const TimelineLayers = ({ slice }: TimelineLayersProps) => {
+const TimelineLayers = () => {
   const cameras = useCameras()
   const [playPoint, setPlayPoint] = usePlayPointState()
+  const slice = useSlice()
   return (
     <div id="layers">
       <div className="legend">
@@ -43,9 +41,9 @@ const TimelineLayersPlaceholder = () =>
     <div className="lines" />
   </div>
 
-const TimelineLayersWrapper = (props: TimelineLayersProps) =>
+const TimelineLayersWrapper = () =>
   <Suspense fallback={<TimelineLayersPlaceholder />}>
-    <TimelineLayers {...props} />
+    <TimelineLayers />
   </Suspense>
 
 export default TimelineLayersWrapper

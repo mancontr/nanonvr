@@ -2,13 +2,11 @@ import React from 'react'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
 import { getTimeMarksBetweenDates } from 'src/util/dates'
+import { useSlice } from './SliceContext'
 
-interface TimelineScaleProps {
-  slice: [number, number]
-}
-
-const TimelineScale = ({ slice }: TimelineScaleProps) => {
+const TimelineScale = () => {
   const playPoint = usePlayPoint()
+  const slice = useSlice()
   const length = slice[1] - slice[0]
   const dayLabels = getTimeMarksBetweenDates(slice, 86400000)
   const timeLabels = getTimeMarksBetweenDates(slice, 2 * 3600000)

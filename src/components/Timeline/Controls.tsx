@@ -3,14 +3,11 @@ import { basename } from 'src/config'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import { Track } from 'src/types'
+import { useSliceState } from './SliceContext'
 
-interface ControlsProps {
-  slice: [number, number]
-  setSlice: (v: [number, number]) => void
-}
-
-const Controls = ({ slice, setSlice }: ControlsProps) => {
+const Controls = () => {
   const [playPoint, setPlayPoint] = usePlayPointState()
+  const [slice, setSlice] = useSliceState()
   const track: Track = useTrackFromPlayPoint(playPoint)
   const size = slice[1] - slice[0]
   const next = () => setSlice([slice[0] + size / 2, slice[1] + size / 2])
