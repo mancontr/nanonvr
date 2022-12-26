@@ -5,11 +5,13 @@ import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
 import { useSlice } from './SliceContext'
 import './Timeline.sass'
+import useTimelineEvents from './useTimelineEvents'
 
 const TimelineLayers = () => {
   const cameras = useCameras()
   const [playPoint, setPlayPoint] = usePlayPointState()
   const slice = useSlice()
+  const events = useTimelineEvents()
   return (
     <div id="layers">
       <div className="legend">
@@ -19,7 +21,7 @@ const TimelineLayers = () => {
           </div>
         )}
       </div>
-      <div className="lines">
+      <div className="lines" {...events}>
         {cameras.map(cam =>
           <Suspense key={cam.uuid} fallback={<div className="layer-entry" />}>
             <CameraRecords cam={cam.uuid} slice={slice} active={cam.uuid === playPoint?.camId} setPlayPoint={setPlayPoint} />
