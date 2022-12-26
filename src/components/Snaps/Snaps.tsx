@@ -2,20 +2,34 @@ import React, { Suspense, useEffect, useRef } from 'react'
 import Loading from 'src/components/Loading/Loading'
 import { basename } from 'src/config'
 import { useCameras } from 'src/hooks/api'
+import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import './Snaps.sass'
 
 const Snaps = (): JSX.Element => {
+  const [playPoint, setPlayPoint] = usePlayPointState()
   const cams = useCameras()
+
+  if (playPoint?.camId) {
+    const cam = cams.find(c => c.uuid === playPoint.camId)
+    return (
+      <div id="snaps" className="one">
+        <Snap cam={cam} onClick={() => setPlayPoint(null)} />
+      </div>
+    )
+  }
+
+  const layout = getLayout(cams.length)
+
   return (
-    <>
+    <div id="snaps" className={layout}>
       {cams.map(cam =>
-        <Snap key={cam.uuid} cam={cam} />
+        <Snap key={cam.uuid} cam={cam} onClick={() => setPlayPoint({ camId: cam.uuid })}/>
       )}
-    </>
+    </div>
   )
 }
 
-const Snap = ({ cam }) => {
+const Snap = ({ cam, ...other }) => {
   const canvasRef = useRef<any>()
 
   useEffect(() => {
@@ -37,15 +51,20 @@ const Snap = ({ cam }) => {
   }, [])
 
   return (
-    <canvas className="snap" ref={canvasRef} />
+    <canvas className="snap" ref={canvasRef} {...other} />
   )
 }
 
+const getLayout = (len: number): string => {
+  if (len === 1) return 'one'
+  if (len <= 4) return 'four'
+  if (len <= 9) return 'nine'
+  return 'sixteen'
+}
+
 const SnapsWrapper = () =>
-  <div id="snaps">
-    <Suspense fallback={<Loading />}>
-      <Snaps />
-    </Suspense>
-  </div>
+  <Suspense fallback={<div id="snaps" className="one"><Loading id="snaps"/></div>}>
+    <Snaps />
+  </Suspense>
 
 export default SnapsWrapper

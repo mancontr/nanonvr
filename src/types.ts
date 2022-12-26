@@ -23,5 +23,5 @@ export interface Event {
 
 export interface PlayPoint {
   camId: string
-  ts: number
+  ts?: number
 }
