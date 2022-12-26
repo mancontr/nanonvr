@@ -10,8 +10,6 @@ const Controls = () => {
   const [slice, setSlice] = useSliceState()
   const track: Track = useTrackFromPlayPoint(playPoint)
   const size = slice[1] - slice[0]
-  const next = () => setSlice([slice[0] + size / 2, slice[1] + size / 2])
-  const prev = () => setSlice([slice[0] - size / 2, slice[1] - size / 2])
   const zoomIn = () => setSlice([slice[0] + size / 4, slice[1] - size / 4])
   const zoomOut = () => setSlice([slice[0] - size / 2, slice[1] + size / 2])
   const stop = () => setPlayPoint(null)
@@ -26,8 +24,6 @@ const Controls = () => {
         <a className={'button icon-download' + (url ? '' : ' disabled')} download href={url} />
       </div>
       <div className="control-block">
-        <div className="button icon-rewind" onClick={prev} />
-        <div className="button icon-ff" onClick={next} />
         <div className="button icon-zoom-in" onClick={zoomIn} />
         <div className="button icon-zoom-out" onClick={zoomOut} />
       </div>
