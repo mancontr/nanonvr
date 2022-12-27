@@ -15,7 +15,7 @@ const useTimelineEvents = () => {
   return {
     ref: element,
     onPointerDown: (e) => {
-      element.current.setPointerCapture(e.pointerId)
+      (e.target || element.current).setPointerCapture(e.pointerId)
       s.current.lasts.set(e.pointerId, e.screenX)
       s.current.lasts.forEach((v, k) => s.current.starts.set(k, v))
       s.current.slice = slice
