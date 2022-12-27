@@ -8,6 +8,6 @@ export const useTrackFromPlayPoint = (playPoint: PlayPoint): Track => {
   const tracksWithDates = useMemo(() => camTracks?.map(trackAddDates) || [], [camTracks])
   const ts = playPoint?.ts
   const track = ts && tracksWithDates
-    .find(t => t.start <= ts && t.start + t.length >= ts)
+    .find(t => t.start <= ts && t.start + t.length * 1000 >= ts)
   return track
 }
