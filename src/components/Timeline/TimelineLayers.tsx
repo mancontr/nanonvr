@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { useCameras } from 'src/hooks/api'
-import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
+import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
 import Loading from '../Loading/Loading'
 import CameraRecords from './CameraRecords'
 import { useSlice } from './SliceContext'
@@ -9,7 +9,7 @@ import useTimelineEvents from './useTimelineEvents'
 
 const TimelineLayers = () => {
   const cameras = useCameras()
-  const [playPoint, setPlayPoint] = usePlayPointState()
+  const playPoint = usePlayPoint()
   const slice = useSlice()
   const events = useTimelineEvents()
   return (
@@ -24,7 +24,7 @@ const TimelineLayers = () => {
       <div className="lines" {...events}>
         {cameras.map(cam =>
           <Suspense key={cam.uuid} fallback={<div className="layer-entry" />}>
-            <CameraRecords cam={cam.uuid} slice={slice} active={cam.uuid === playPoint?.camId} setPlayPoint={setPlayPoint} />
+            <CameraRecords cam={cam.uuid} active={cam.uuid === playPoint?.camId} />
           </Suspense>
         )}
         {playPoint &&

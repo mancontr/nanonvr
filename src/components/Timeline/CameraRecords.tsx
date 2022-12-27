@@ -1,22 +1,21 @@
 import React from 'react'
 import { useCameraTracks } from 'src/hooks/api'
-import { PlayPoint } from 'src/types'
 import { trackAddDates } from 'src/util/dates'
+import { useSlice } from './SliceContext'
 
 interface CameraRecordsProps {
   cam: string
-  slice: [number, number]
   active: boolean
-  setPlayPoint: (playPoint: PlayPoint) => void
 }
 
-const CameraRecords = ({ cam, slice, active, setPlayPoint }: CameraRecordsProps) => {
+const CameraRecords = ({ cam, active }: CameraRecordsProps) => {
+  const slice = useSlice()
   const tracks = useCameraTracks(cam)
   const tracksWithDates = tracks.map(trackAddDates).reverse()
   const shown = tracksWithDates.filter(t => t.end > slice[0] && t.start < slice[1])
   const totalTime = slice[1] - slice[0]
   return (
-    <div className={'layer-entry' + (active ? ' active' : '')}>
+    <div className={'layer-entry' + (active ? ' active' : '')} data-cam={cam}>
       {shown.map(block => {
         const style = {
           left: (block.start - slice[0]) * 100 / totalTime + '%',
@@ -24,7 +23,6 @@ const CameraRecords = ({ cam, slice, active, setPlayPoint }: CameraRecordsProps)
         }
         return <div
           className="video-block"
-          onClick={() => setPlayPoint({ camId: block.uuid, ts: block.start })}
           key={block.filename}
           style={style}
         />

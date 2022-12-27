@@ -1,20 +1,37 @@
 import { useRef } from "react"
+import { useSetPlayPoint } from "src/routes/Home/PlayPointContext"
 import { useSliceState } from "./SliceContext"
 
+interface Tap {
+  start: number
+  last: number
+  target?: any
+  ts: number
+}
+
 interface ActionState {
-  taps: Map<number, {
-    start: number
-    last: number
-    target?: any
-    ts: number
-  }>
+  taps: Map<number, Tap>
   slice: [number, number]
 }
 
 const useTimelineEvents = () => {
   const [slice, setSlice] = useSliceState()
+  const setPlayPoint = useSetPlayPoint()
   const s = useRef<ActionState>({ taps: new Map(), slice: slice })
   const element = useRef<HTMLDivElement>()
+
+  const handleSeek = (tap: Tap) => {
+    if (tap.target?.classList?.contains('video-block')) {
+      const camId = tap.target.parentElement.dataset.cam
+      const totalWidth = element.current.clientWidth
+      const [t0, t1] = s.current.slice
+      const totalTime = t1 - t0
+      const fullTs = t0 + totalTime / totalWidth * (tap.start - 101)
+      const ts = Math.round(fullTs / 1000) * 1000 // Second precission only
+      console.log('Jump to:', camId, ts)
+      setPlayPoint({ camId, ts })
+    }
+  }
 
   return {
     ref: element,
@@ -35,7 +52,7 @@ const useTimelineEvents = () => {
       s.current.taps.forEach((v) => v.start = v.last)
       s.current.slice = slice
       if ((Date.now() - tap.ts) < 150) {
-        if (tap.target?.click) tap.target?.click()
+        handleSeek(tap)
       }
     },
     onPointerMove: (e) => {
