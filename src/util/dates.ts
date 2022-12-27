@@ -21,6 +21,7 @@ export const trackAddDates = (track: Track) => {
  * @returns A list of day boundaries
  */
  export const getTimeMarksBetweenDates = (slice: [number, number], size: number): number[] => {
+  if (size === 0) return []
   const boundaries = []
   let startOfDay = new Date(slice[0])
   startOfDay = new Date(startOfDay.getFullYear(), startOfDay.getMonth(), startOfDay.getDate())

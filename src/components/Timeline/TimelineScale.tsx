@@ -1,5 +1,6 @@
 import React from 'react'
 import { FormattedDate, FormattedTime } from 'react-intl'
+import { useWidth } from 'src/hooks/responsive'
 import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
 import { getTimeMarksBetweenDates } from 'src/util/dates'
 import { useSlice } from './SliceContext'
@@ -8,10 +9,14 @@ const TimelineScale = () => {
   const playPoint = usePlayPoint()
   const slice = useSlice()
   const length = slice[1] - slice[0]
-  const dayLabels = getTimeMarksBetweenDates(slice, 86400000)
-  const timeLabels = getTimeMarksBetweenDates(slice, 2 * 3600000)
-  const highBoundaries = getTimeMarksBetweenDates(slice, 3600000)
-  const lowBoundaries = getTimeMarksBetweenDates(slice, 900000)
+  const pixels = useWidth() - 100
+  const pph = pixels * 3600 * 1000 / length
+  const resolution = blocksAtResolution.find(x => x.min < pph)
+
+  const dayLabels = getTimeMarksBetweenDates(slice, resolution.day)
+  const timeLabels = getTimeMarksBetweenDates(slice, resolution.time)
+  const highBoundaries = getTimeMarksBetweenDates(slice, resolution.high)
+  const lowBoundaries = getTimeMarksBetweenDates(slice, resolution.low)
 
   return (
     <div id="scale">
@@ -51,5 +56,17 @@ const TimelineScale = () => {
     </div>
   )
 }
+
+const blocksAtResolution = [
+  { min: 2000, day: 86400000, time: 60000, high: 60000, low: 10000 },
+  { min: 600, day: 86400000, time: 300000, high: 300000, low: 60000 },
+  { min: 250, day: 86400000, time: 600000, high: 300000, low: 60000 },
+  { min: 100, day: 86400000, time: 1800000, high: 1800000, low: 600000 },
+  { min: 40, day: 86400000, time: 3600000, high: 3600000, low: 900000 },
+  { min: 18, day: 86400000, time: 14400000, high: 3600000, low: 1800000 },
+  { min: 5, day: 86400000, time: 28800000, high: 28800000, low: 3600000 },
+  { min: 2, day: 86400000, time: 0, high: 86400000, low: 28800000 },
+  { min: 0, day: 0, time: 0, high: 86400000, low: 0 },
+]
 
 export default TimelineScale
