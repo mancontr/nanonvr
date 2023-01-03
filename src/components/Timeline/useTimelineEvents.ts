@@ -24,11 +24,11 @@ const useTimelineEvents = () => {
     if (tap.target?.classList?.contains('video-block')) {
       const camId = tap.target.parentElement.dataset.cam
       const totalWidth = element.current.clientWidth
+      const leftMargin = element.current.getBoundingClientRect().left
       const [t0, t1] = s.current.slice
       const totalTime = t1 - t0
-      const fullTs = t0 + totalTime / totalWidth * (tap.start - 101)
+      const fullTs = t0 + totalTime / totalWidth * (tap.start - leftMargin)
       const ts = Math.round(fullTs / 1000) * 1000 // Second precission only
-      console.log('Jump to:', camId, ts)
       setPlayPoint({ camId, ts })
     }
   }
@@ -38,8 +38,8 @@ const useTimelineEvents = () => {
     onPointerDown: (e) => {
       element.current.setPointerCapture(e.pointerId)
       s.current.taps.set(e.pointerId, {
-        start: e.screenX,
-        last: e.screenX,
+        start: e.clientX,
+        last: e.clientX,
         target: e.target,
         ts: Date.now()
       })
@@ -57,7 +57,7 @@ const useTimelineEvents = () => {
     },
     onPointerMove: (e) => {
       if (!s.current.taps.has(e.pointerId)) return // Just a hover
-      s.current.taps.get(e.pointerId).last = e.screenX
+      s.current.taps.get(e.pointerId).last = e.clientX
 
       const ids = Array.from(s.current.taps.keys())
       const totalWidth = element.current.clientWidth

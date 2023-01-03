@@ -1,6 +1,6 @@
 {
   "name": "nanonvr",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "dependencies": {
     "async-mqtt": "^2.6.3",
