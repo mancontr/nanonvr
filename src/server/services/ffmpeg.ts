@@ -40,9 +40,9 @@ export const startRecordingCam = (cam: Camera) => {
     '-an',
     '-vcodec', 'copy',
     '-f', 'segment',
-    '-segment_format_options', 'movflags=+empty_moov+separate_moof+frag_keyframe',
+    '-segment_format_options', 'movflags=+empty_moov+separate_moof+frag_keyframe:min_frag_duration=10000000',
     '-strftime', '1',
-    '-segment_time', '600',
+    '-segment_time', '60',
     '-segment_atclocktime', '1',
     '-metadata', 'title=' + cam.name,
     target
