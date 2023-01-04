@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import koaBody from 'koa-body'
+import koaRange from 'koa-range'
 import * as cameras from './controllers/cameras'
 import * as tracks from './controllers/tracks'
 import * as events from './controllers/events'
@@ -8,6 +9,7 @@ import * as media from './controllers/media'
 const router = new Router()
 
 router.use(koaBody({ multipart: true }))
+router.use(koaRange)
 
 router.get('/api/cameras', cameras.getCameras)
 router.get('/api/cameras/:id', cameras.getCamera)

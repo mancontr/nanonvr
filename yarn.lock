@@ -7646,6 +7646,13 @@ koa-convert@^2.0.0:
     co "^4.6.0"
     koa-compose "^4.1.0"
 
+koa-range@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/koa-range/-/koa-range-0.3.0.tgz#3588e3496473a839a1bd264d2a42b1d85bd7feac"
+  integrity sha512-Ich3pCz6RhtbajYXRWjIl6O5wtrLs6kE3nkXc9XmaWe+MysJyZO7K4L3oce1Jpg/iMgCbj+5UCiMm/rqVtcDIg==
+  dependencies:
+    stream-slice "^0.1.2"
+
 koa-router@^10.1.1:
   version "10.1.1"
   resolved "https://registry.yarnpkg.com/koa-router/-/koa-router-10.1.1.tgz#20809f82648518b84726cd445037813cd99f17ff"
@@ -10792,6 +10799,11 @@ stream-shift@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/stream-shift/-/stream-shift-1.0.1.tgz#d7088281559ab2778424279b0877da3c392d5a3d"
   integrity sha512-AiisoFqQ0vbGcZgQPY1cdP2I76glaVA/RauYR4G4thNFgkTqr90yXTo4LYX60Jl+sIlPNHHdGSwo01AvbKUSVQ==
+
+stream-slice@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/stream-slice/-/stream-slice-0.1.2.tgz#2dc4f4e1b936fb13f3eb39a2def1932798d07a4b"
+  integrity sha512-QzQxpoacatkreL6jsxnVb7X5R/pGw9OUv2qWTYWnmLpg4NdN31snPy/f3TdQE1ZUXaThRvj1Zw4/OGg0ZkaLMA==
 
 string-length@^4.0.1:
   version "4.0.2"
