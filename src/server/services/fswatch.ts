@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
+import yaml from 'src/server/services/yaml'
 import { Track } from 'src/types'
 import getMp4Length from 'src/util/getMp4Length'
 
@@ -28,7 +29,7 @@ export const start = () => {
  * Loop through all the cameras, checking for updates with handleUpdate()
  */
  const handleUpdateAll = async (): Promise<void> => {
-  const cams = db.getCameras()
+  const cams = yaml.getCameras()
   for (const cam of cams) {
     await handleUpdate(cam.uuid)
   }

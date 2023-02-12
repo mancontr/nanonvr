@@ -1,10 +1,10 @@
 declare var __CLIENT__: boolean, window: any
 
+// Folder for the config
+export const configDir: string = process.env.CONFIG_DIR || '/config'
+
 // Folder for the videos
 export const dataDir: string = process.env.DATA_DIR || '/share'
-
-// Folder for the database
-export const dbDir: string = process.env.DB_DIR || '/data'
 
 // Basename
 export const basename = (__CLIENT__

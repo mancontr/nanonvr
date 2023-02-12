@@ -1,10 +1,9 @@
 import path from 'path'
 import SqliteDatabase from 'better-sqlite3'
-import { v4 as uuid } from 'uuid'
-import { Camera, Track, Event } from 'src/types'
-import { dbDir } from 'src/config'
+import { Track, Event } from 'src/types'
+import { dataDir } from 'src/config'
 
-const defaultPath = path.join(dbDir, 'data.db')
+const defaultPath = path.join(dataDir, 'data.db')
 
 export class Database {
   db: SqliteDatabase = null
@@ -15,71 +14,20 @@ export class Database {
 
   initialize() {
     // Create tables
-    this.db.prepare(`CREATE TABLE IF NOT EXISTS cam (
-      uuid TEXT NOT NULL PRIMARY KEY,
-      name TEXT NOT NULL,
-      streamMain TEXT NOT NULL,
-      streamSub TEXT,
-      snapshot TEXT
-    )`).run()
-
     this.db.prepare(`CREATE TABLE IF NOT EXISTS track (
-      uuid TEXT NOT NULL REFERENCES cam(uuid),
+      uuid TEXT NOT NULL,
       filename TEXT NOT NULL,
       filesize INTEGER NOT NULL,
       length INTEGER NOT NULL
     )`).run()
 
     this.db.prepare(`CREATE TABLE IF NOT EXISTS event (
-      uuid TEXT NOT NULL REFERENCES cam(uuid),
+      uuid TEXT NOT NULL,
       filename TEXT NOT NULL,
       filesize INTEGER NOT NULL,
       originalName TEXT NOT NULL,
       isVideo BOOLEAN NOT NULL DEFAULT FALSE
     )`).run()
-
-    this.db.prepare(`CREATE TABLE IF NOT EXISTS conf (
-      key TEXT NOT NULL PRIMARY KEY,
-      value TEXT
-    )`).run()
-
-    // Insert default config
-    this.db.prepare(`INSERT OR IGNORE INTO conf(key, value) VALUES(?, ?)`).run('maxdisk', '85')
-  }
-
-  // --- Cameras ---
-
-  getCameras(): Camera[] {
-    return this.db
-      .prepare('SELECT * FROM cam ORDER BY name')
-      .all()
-  }
-
-  getCamera(id: string): Camera {
-    return this.db
-      .prepare('SELECT * FROM cam WHERE uuid = ?')
-      .get([id])
-  }
-
-  addCamera(cam: Camera): Camera {
-    const id = uuid()
-    this.db
-      .prepare('INSERT INTO cam(uuid, name, streamMain, streamSub, snapshot) values (?, ?, ?, ?, ?)')
-      .run([id, cam.name, cam.streamMain, cam.streamSub, cam.snapshot])
-    return { ...cam, uuid: id }
-  }
-
-  updateCamera(id: string, cam: Camera): Camera {
-    this.db
-      .prepare('UPDATE cam SET name = ?, streamMain = ?, streamSub = ?, snapshot = ? WHERE uuid = ?')
-      .run([cam.name, cam.streamMain, cam.streamSub, cam.snapshot, id])
-    return { ...cam, uuid: id }
-  }
-
-  removeCamera(id: string): void {
-    this.db
-      .prepare('DELETE FROM cam WHERE uuid = ?')
-      .run([id])
   }
 
   // --- Tracks ---
@@ -148,15 +96,6 @@ export class Database {
     return this.db
       .prepare('SELECT * FROM event ORDER BY filename DESC LIMIT 100')
       .all()
-  }
-
-  // --- Config ---
-
-  getConfig(key: string): string {
-    return this.db
-      .prepare('SELECT value FROM conf WHERE key = ?')
-      .get([key])
-      ?.value || 0
   }
 
 }

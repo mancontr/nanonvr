@@ -1,7 +1,7 @@
 import { mkdirSync } from 'fs'
 import path from 'path'
 import { ChildProcess, spawn, exec } from 'child_process'
-import db from './db'
+import yaml from './yaml'
 import { Camera } from 'src/types'
 import { dataDir } from 'src/config'
 
@@ -59,7 +59,7 @@ export const startRecordingCam = (cam: Camera) => {
 }
 
 export const startRecordingAll = async () => {
-  const cameras = db.getCameras()
+  const cameras = yaml.getCameras()
   cameras.forEach(startRecordingCam)
 }
 

@@ -3,6 +3,7 @@ import path from 'path'
 import { exec } from 'child_process'
 import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
+import yaml from 'src/server/services/yaml'
 import { Track } from 'src/types'
 
 let hdSize: number = 0
@@ -37,7 +38,9 @@ const getHdSize = async (): Promise<number> => {
  */
 const doCleanup = async (): Promise<void> => {
   const totalSize = db.getTotalSize()
-  const maxSize = (parseInt(db.getConfig('maxsize')) || 85) * hdSize / 100
+  const storageLimits = yaml.getStorageLimits()
+  const maxPercent = storageLimits?.maxPercent || 85
+  const maxSize = maxPercent * hdSize / 100
   // console.log('We can use up to', maxSize, 'bytes, of which we are using', totalSize, 'bytes')
   if (maxSize > 0 && totalSize > maxSize) {
     const removeBytes = totalSize - maxSize

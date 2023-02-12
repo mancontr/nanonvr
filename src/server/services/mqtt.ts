@@ -1,6 +1,6 @@
 import { getMqttInfo } from "./hass"
 import * as mqtt from 'async-mqtt'
-import db from './db'
+import yaml from './yaml'
 
 let client = null
 
@@ -25,7 +25,7 @@ export const initialize = async () => {
 
 export const syncCameras = async () => {
   if (!client) return
-  const cameras = db.getCameras()
+  const cameras = yaml.getCameras()
   for (const camera of cameras) {
     const topic = `homeassistant/binary_sensor/nanonvr/${camera.uuid}/config`
     const body = JSON.stringify({
@@ -46,7 +46,7 @@ export const syncCameras = async () => {
 
 export const resetCameras = async () => {
   if (!client) return
-  const cameras = db.getCameras()
+  const cameras = yaml.getCameras()
   for (const camera of cameras) {
     await client.publish(
       `nanonvr/cams/${camera.uuid}`,

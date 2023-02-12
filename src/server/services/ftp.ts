@@ -3,6 +3,7 @@ import net from 'net'
 import path from 'path'
 import { ftpPort, ftpDataPort, dataDir } from 'src/config'
 import db from './db'
+import yaml from './yaml'
 import { sendEvent } from './mqtt'
 
 let server: net.Server = null
@@ -134,7 +135,7 @@ const handleDataConnection = (socket: net.Socket) => {
 }
 
 const handleFile = (buffer: Buffer, ts: number, clientIp: string, filename: string) => {
-  const camera = db.getCameras().find(c => c.streamMain.includes(clientIp))
+  const camera = yaml.getCameras().find(c => c.streamMain.includes(clientIp))
   if (!camera) {
     console.warn(`[ftp] Discarded file from unknown source: ${clientIp}:${filename}`)
     return
