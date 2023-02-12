@@ -14,6 +14,7 @@ const CamList = () => {
         <CamEntry key={cam.uuid} cam={cam} />
       )}
       <Link className="cam-entry new" to="/config/new">
+        <span className="icon icon-plus" />
         <span className="title">
           <FormattedMessage id="config.cams.add" />
         </span>

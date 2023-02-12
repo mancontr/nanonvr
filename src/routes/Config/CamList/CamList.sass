@@ -1,11 +1,14 @@
 #config-cam-list
 
   #cam-list
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
     margin-top: 10px
 
     .cam-entry
       align-items: stretch
-      background-color: #157545
+      background-color: #666
       background-position: center
       background-size: cover
       border: 1px solid #ccc
@@ -21,3 +24,7 @@
       .title
         background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.6) 70%)
         padding-top: 5px
+
+      .icon
+        font-size: 30px
+        margin-bottom: 36px

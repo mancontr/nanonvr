@@ -12,6 +12,7 @@ const CamEntry = ({ cam }: CamEntryProps) => {
   if (cam.snapshot) style.backgroundImage = `url("${basename}/api/cameras/${cam.uuid}/snapshot")`
   return (
     <Link className="cam-entry" to={'/config/' + cam.uuid} style={style}>
+      {!cam.snapshot && <span className="icon icon-no-image" />}
       <span className="title">{cam.name}</span>
     </Link>
   )
