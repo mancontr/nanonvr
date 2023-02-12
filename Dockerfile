@@ -13,7 +13,7 @@ RUN yarn build
 # and copy build artifacts
 FROM node:14-alpine
 
-ENV DATA_DIR=/share/nanonvr PORT=8099 PATH=/usr/local/bin:$PATH
+ENV DATA_DIR=/share/nanonvr CONFIG_DIR=/config PORT=8099 PATH=/usr/local/bin:$PATH
 EXPOSE 8099/tcp 21821/tcp 21822/tcp
 VOLUME /share
 VOLUME /data
