@@ -1,4 +1,5 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { basename } from 'src/config'
 import { useEvents } from 'src/hooks/api'
 import { Event } from 'src/types'
@@ -28,6 +29,11 @@ const Events = () => {
       <div className="main">
         {currEvent &&
           <EventCard event={currEvent} isBig />
+        }
+        {events.length === 0 &&
+          <div className="event-card alert">
+            <FormattedMessage id="events.empty" />
+          </div>
         }
       </div>
       <div className="thumbs">
