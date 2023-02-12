@@ -42,19 +42,19 @@ const CamEdit = () => {
     <form onSubmit={handleSubmit}>
       <label>
         <span><FormattedMessage id="config.edit.field.name" /></span>
-        <input name="name" value={cam.name} onChange={handleChange} />
+        <input name="name" required value={cam.name} onChange={handleChange} />
       </label>
       <label>
         <span><FormattedMessage id="config.edit.field.streamMain" /></span>
-        <input name="streamMain" value={cam.streamMain} onChange={handleChange} />
+        <input name="streamMain" type="url" required value={cam.streamMain} onChange={handleChange} />
       </label>
       <label>
         <span><FormattedMessage id="config.edit.field.streamSub" /></span>
-        <input name="streamSub" value={cam.streamSub} onChange={handleChange} />
+        <input name="streamSub" type="url" value={cam.streamSub} onChange={handleChange} />
       </label>
       <label>
         <span><FormattedMessage id="config.edit.field.snapshot" /></span>
-        <input name="snapshot" value={cam.snapshot} onChange={handleChange} />
+        <input name="snapshot" type="url" value={cam.snapshot} onChange={handleChange} />
       </label>
       <button className="primary">
         <FormattedMessage id={'config.edit.' + (id ? 'save' : 'add')} />
