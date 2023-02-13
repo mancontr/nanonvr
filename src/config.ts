@@ -16,5 +16,6 @@ export const basename = (__CLIENT__
 export const apiBaseUrl: string = basename + '/api'
 
 // FTP settings
+export const ftpIp: string = process.env.FTP_IP || null
 export const ftpPort: number = parseInt(process.env.FTP_PORT) || 21821
 export const ftpDataPort: number = parseInt(process.env.FTP_DATA_PORT) || 21822

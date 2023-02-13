@@ -1,10 +1,12 @@
+import dns from 'dns'
 import fs from 'fs'
 import net from 'net'
 import path from 'path'
-import { ftpPort, ftpDataPort, dataDir } from 'src/config'
+import { ftpIp, ftpPort, ftpDataPort, dataDir } from 'src/config'
 import db from './db'
 import yaml from './yaml'
 import { sendEvent } from './mqtt'
+import { getHaInfo } from './hass'
 
 let server: net.Server = null
 let dataServer: net.Server = null
@@ -18,7 +20,23 @@ interface FtpState {
 
 const settingsMapping = new Map<string, FtpState>()
 
-export const start = () => {
+let hostIp = ftpIp
+
+const lookup = (hostname: string): Promise<string> => new Promise((resolve, reject) => {
+  dns.lookup(hostname, (err, address) => err ? reject(err) : resolve(address))
+})
+
+export const start = async () => {
+  try {
+    const info = await getHaInfo()
+    if (info?.internal_url) {
+      const hostname = new URL(info.internal_url).hostname
+      hostIp = await lookup(hostname)
+    }
+  } catch (e) {
+    // Ignore silently (not on HASS?)
+  }
+
   server = net.createServer(handleConnection)
   server.on('error', () => console.warn('[ftp]: Error listening on port', ftpPort))
   server.listen(ftpPort, '0.0.0.0')
@@ -87,7 +105,8 @@ const handleConnection = (socket: net.Socket) => {
       case 'PASV':
         const p1 = Math.floor(ftpDataPort / 256)
         const p2 = ftpDataPort % 256
-        const target = socket.localAddress.replace(/\./g, ',') + `,${p1},${p2}`
+        const ip = hostIp || socket.localAddress
+        const target = ip.replace(/\./g, ',') + `,${p1},${p2}`
         socket.write(`227 Entering Passive Mode (${target}).\r\n`)
         break
       case 'STOR':

@@ -9,7 +9,7 @@ export const apiCall = async (route: string) => {
   })
   if (!response.ok) throw new Error('[HASS] Bad response: ' + response.status)
   const data = await response.json()
-  return data.data
+  return data.data || data
 }
 
 export interface HassSelfInfo {
@@ -27,3 +27,10 @@ export interface HassMqtt {
 }
 
 export const getMqttInfo = (): Promise<HassMqtt> => apiCall('/services/mqtt')
+
+export interface HassHAInfo {
+  internal_url: string
+  // ... and many more
+}
+
+export const getHaInfo = (): Promise<HassHAInfo> => apiCall('/core/api/config')
