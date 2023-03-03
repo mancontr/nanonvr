@@ -1,5 +1,5 @@
 import React from 'react'
-import { basename } from 'src/config'
+import basename from 'src/util/basename'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import { Track } from 'src/types'

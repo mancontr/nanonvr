@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { basename } from 'src/config'
+import basename from 'src/util/basename'
 import App from 'src/routes'
 
 

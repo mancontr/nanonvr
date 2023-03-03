@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { basename } from 'src/config'
+import basename from 'src/util/basename'
 import { Camera } from 'src/types'
 
 interface CamEntryProps {

@@ -25,3 +25,25 @@ export interface PlayPoint {
   camId: string
   ts?: number
 }
+
+export interface FoldersConfig {
+  config: string
+  video: string
+}
+
+export interface StorageConfig {
+  maxPercent?: number
+}
+
+export interface FtpConfig {
+  host: string
+  port: number
+  dataPort: number
+}
+
+export interface Config {
+  cameras?: Camera[]
+  folders?: FoldersConfig
+  ftp?: FtpConfig
+  storage?: StorageConfig
+}

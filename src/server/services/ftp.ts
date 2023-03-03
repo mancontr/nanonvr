@@ -1,12 +1,12 @@
-import dns from 'dns'
+import { promises as dns } from 'dns'
 import fs from 'fs'
 import net from 'net'
 import path from 'path'
-import { ftpIp, ftpPort, ftpDataPort, dataDir } from 'src/config'
 import db from './db'
-import yaml from './yaml'
 import { sendEvent } from './mqtt'
 import { getHaInfo } from './hass'
+import { getConfig } from './config'
+import bus from './bus'
 
 let server: net.Server = null
 let dataServer: net.Server = null
@@ -20,30 +20,32 @@ interface FtpState {
 
 const settingsMapping = new Map<string, FtpState>()
 
-let hostIp = ftpIp
+let hostIp: string = null
 
-const lookup = (hostname: string): Promise<string> => new Promise((resolve, reject) => {
-  dns.lookup(hostname, (err, address) => err ? reject(err) : resolve(address))
-})
-
-export const start = async () => {
-  try {
-    const info = await getHaInfo()
-    if (info?.internal_url) {
-      const hostname = new URL(info.internal_url).hostname
-      hostIp = await lookup(hostname)
+const start = async () => {
+  const config = getConfig()
+  hostIp = config.ftp.host
+  if (!hostIp) {
+    // No host set; try getting it from HA
+    try {
+      const info = await getHaInfo()
+      if (info?.internal_url) {
+        const hostname = new URL(info.internal_url).hostname
+        const resolved = await dns.lookup(hostname)
+        hostIp = resolved.address
+      }
+    } catch (e) {
+      // Ignore silently (not on HASS?)
     }
-  } catch (e) {
-    // Ignore silently (not on HASS?)
   }
 
   server = net.createServer(handleConnection)
-  server.on('error', () => console.warn('[ftp]: Error listening on port', ftpPort))
-  server.listen(ftpPort, '0.0.0.0')
+  server.on('error', () => console.warn('[ftp]: Error listening on port', config.ftp.port))
+  server.listen(config.ftp.port, '0.0.0.0')
 
   dataServer = net.createServer(handleDataConnection)
-  dataServer.on('error', () => console.warn('[ftp]: Error listening on port', ftpDataPort))
-  dataServer.listen(ftpDataPort, '0.0.0.0')
+  dataServer.on('error', () => console.warn('[ftp]: Error listening on port', config.ftp.dataPort))
+  dataServer.listen(config.ftp.dataPort, '0.0.0.0')
 }
 
 const handleConnection = (socket: net.Socket) => {
@@ -103,8 +105,9 @@ const handleConnection = (socket: net.Socket) => {
         socket.write('200 Ok.\r\n')
         break
       case 'PASV':
-        const p1 = Math.floor(ftpDataPort / 256)
-        const p2 = ftpDataPort % 256
+        const dataPort = getConfig().ftp.dataPort
+        const p1 = Math.floor(dataPort / 256)
+        const p2 = dataPort % 256
         const ip = hostIp || socket.localAddress
         const target = ip.replace(/\./g, ',') + `,${p1},${p2}`
         socket.write(`227 Entering Passive Mode (${target}).\r\n`)
@@ -154,13 +157,14 @@ const handleDataConnection = (socket: net.Socket) => {
 }
 
 const handleFile = (buffer: Buffer, ts: number, clientIp: string, filename: string) => {
-  const camera = yaml.getCameras().find(c => c.streamMain.includes(clientIp))
+  const config = getConfig()
+  const camera = config.cameras.find(c => c.streamMain.includes(clientIp))
   if (!camera) {
     console.warn(`[ftp] Discarded file from unknown source: ${clientIp}:${filename}`)
     return
   }
 
-  const folder = path.join(dataDir, camera.uuid, 'events')
+  const folder = path.join(config.folders.video, camera.uuid, 'events')
   fs.mkdirSync(folder, { recursive: true })
 
   let ext = filename.substring(filename.lastIndexOf('.') + 1)
@@ -187,3 +191,5 @@ const handleFile = (buffer: Buffer, ts: number, clientIp: string, filename: stri
   sendEvent(camera.uuid)
   // console.log(`[ftp] Received file: ${clientIp}:${filename} ; saved at: ${destination}`)
 }
+
+bus.once('configLoaded', start)

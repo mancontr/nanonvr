@@ -1,16 +1,12 @@
 import fs from 'fs'
 import path from 'path'
-import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
-import yaml from 'src/server/services/yaml'
 import { Track } from 'src/types'
 import getMp4Length from 'src/util/getMp4Length'
+import bus from './bus'
+import { getConfig } from './config'
 
-export const start = () => {
-  // We're the first service, so ensure the dataDir exists already
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true })
-  }
+const start = () => {
   // The worker will be watching forever the data dir
   const worker = async () => {
     while(true) {
@@ -29,7 +25,7 @@ export const start = () => {
  * Loop through all the cameras, checking for updates with handleUpdate()
  */
  const handleUpdateAll = async (): Promise<void> => {
-  const cams = yaml.getCameras()
+  const cams = getConfig().cameras
   for (const cam of cams) {
     await handleUpdate(cam.uuid)
   }
@@ -45,7 +41,8 @@ const handleUpdate = async (camId: string): Promise<void> => {
   const known = db.getTracks(camId)
 
   // Get a list of current files for this camera
-  const folder = path.join(dataDir, camId)
+  const folder = path.join(getConfig().folders.video, camId)
+  if (!fs.existsSync(folder)) return
   const files = getFolderFiles(folder)
 
   // Create some fast lookup maps/sets
@@ -96,3 +93,5 @@ const getFolderFiles = (folder: string): TrackFileInfo[] =>
         filesize: stats.size,
       }
     })
+
+bus.once('configLoaded', start)

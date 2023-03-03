@@ -1,17 +1,14 @@
-import db from 'src/server/services/db'
-import * as fswatch from 'src/server/services/fswatch'
-import * as ffmpeg from 'src/server/services/ffmpeg'
-import * as cleanup from 'src/server/services/cleanup'
-import * as ftp from 'src/server/services/ftp'
-import * as mqtt from 'src/server/services/mqtt'
-import config from 'src/server/services/yaml'
+import { init } from 'src/server/services/config'
+// All other services MUST be imported, but
+// they don't need to be initialised manually.
+// They will wait for a signal on the bus to start working.
+import 'src/server/services/cleanup'
+import 'src/server/services/db'
+import 'src/server/services/ffmpeg'
+import 'src/server/services/fswatch'
+import 'src/server/services/ftp'
+import 'src/server/services/mqtt'
 
-export const startup = () => {
-  config.load()
-  db.initialize()
-  fswatch.start()
-  if (!process.env.NO_RECORD) ffmpeg.startRecordingAll()
-  cleanup.start()
-  ftp.start()
-  mqtt.initialize()
+export const startup = async () => {
+  await init()
 }

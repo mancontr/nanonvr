@@ -1,9 +1,9 @@
 import { mkdirSync } from 'fs'
 import path from 'path'
 import { ChildProcess, spawn, exec } from 'child_process'
-import yaml from './yaml'
 import { Camera } from 'src/types'
-import { dataDir } from 'src/config'
+import bus from './bus'
+import { getConfig } from './config'
 
 export interface FfmpegThreadInfo {
   process?: ChildProcess
@@ -21,10 +21,11 @@ const getOrCreateThreadInfo = (id: string): FfmpegThreadInfo => {
 }
 
 export const startRecordingCam = (cam: Camera) => {
+  const config = getConfig()
   const info = getOrCreateThreadInfo(cam.uuid)
   if (info.process) return // Already running
 
-  const folder = path.join(dataDir, cam.uuid)
+  const folder = path.join(config.folders.video, cam.uuid)
   mkdirSync(folder, { recursive: true })
 
   const target = path.join(folder, '%Y-%m-%d %H-%M-%S.mp4')
@@ -59,7 +60,7 @@ export const startRecordingCam = (cam: Camera) => {
 }
 
 export const startRecordingAll = async () => {
-  const cameras = yaml.getCameras()
+  const cameras = getConfig().cameras
   cameras.forEach(startRecordingCam)
 }
 
@@ -71,3 +72,5 @@ export const getVideoLength = async (file: string): Promise<number> => {
   const secs = Math.round(parseFloat(out))
   return secs
 }
+
+bus.once('configLoaded', startRecordingAll)

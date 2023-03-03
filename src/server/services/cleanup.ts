@@ -1,14 +1,14 @@
 import fs from 'fs'
 import path from 'path'
 import { exec } from 'child_process'
-import { dataDir } from 'src/config'
 import db from 'src/server/services/db'
-import yaml from 'src/server/services/yaml'
 import { Track } from 'src/types'
+import { getConfig } from './config'
+import bus from './bus'
 
 let hdSize: number = 0
 
-export const start = () => {
+const start = () => {
   const worker = async () => {
     hdSize = await getHdSize()
     while(true) {
@@ -24,7 +24,8 @@ export const start = () => {
 }
 
 const getHdSize = async (): Promise<number> => {
-  const cmd = `df -P "${dataDir}"`
+  const config = getConfig()
+  const cmd = `df -P "${config.folders.video}"`
   const out: string = await new Promise((resolve, reject) =>
     exec(cmd, (err, text) => err ? reject(err) : resolve(text))
   )
@@ -37,16 +38,16 @@ const getHdSize = async (): Promise<number> => {
  * Checks if a video cleanup is required, according to the configuration.
  */
 const doCleanup = async (): Promise<void> => {
+  const config = getConfig()
   const totalSize = db.getTotalSize()
-  const storageLimits = yaml.getStorageLimits()
-  const maxPercent = storageLimits?.maxPercent || 85
+  const maxPercent = config.storage.maxPercent || 85
   const maxSize = maxPercent * hdSize / 100
   // console.log('We can use up to', maxSize, 'bytes, of which we are using', totalSize, 'bytes')
   if (maxSize > 0 && totalSize > maxSize) {
     const removeBytes = totalSize - maxSize
     const tracks = getUptoBytes(db.getOldestTracks(), removeBytes)
     for (const track of tracks) {
-      const file = path.join(dataDir, track.uuid, track.filename)
+      const file = path.join(config.folders.video, track.uuid, track.filename)
       fs.unlinkSync(file)
     }
   }
@@ -63,3 +64,5 @@ const getUptoBytes = (tracks: Track[], bytes: number): Track[] => {
   }
   return list
 }
+
+bus.once('configLoaded', start)

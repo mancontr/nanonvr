@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef } from 'react'
 import Loading from 'src/components/Loading/Loading'
-import { basename } from 'src/config'
+import basename from 'src/util/basename'
 import { useCameras } from 'src/hooks/api'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import './Snaps.sass'

@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { basename } from 'src/config'
+import basename from 'src/util/basename'
 import { useEvents } from 'src/hooks/api'
 import { Event } from 'src/types'
 import './Events.sass'

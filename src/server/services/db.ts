@@ -1,18 +1,14 @@
 import path from 'path'
 import SqliteDatabase from 'better-sqlite3'
-import { Track, Event } from 'src/types'
-import { dataDir } from 'src/config'
-
-const defaultPath = path.join(dataDir, 'data.db')
+import { Track, Event, Config } from 'src/types'
+import bus from './bus'
 
 export class Database {
   db: SqliteDatabase = null
 
-  constructor(altPath: string = defaultPath) {
-    this.db = new SqliteDatabase(altPath)
-  }
+  initialize(dbPath: string) {
+    this.db = new SqliteDatabase(dbPath)
 
-  initialize() {
     // Create tables
     this.db.prepare(`CREATE TABLE IF NOT EXISTS track (
       uuid TEXT NOT NULL,
@@ -101,4 +97,9 @@ export class Database {
 }
 
 const db = new Database()
+
+bus.once('configLoaded', (conf: Config) =>
+  db.initialize(path.join(conf.folders.video, 'data.db'))
+)
+
 export default db

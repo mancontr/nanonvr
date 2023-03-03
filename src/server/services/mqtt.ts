@@ -1,10 +1,11 @@
 import { getMqttInfo } from "./hass"
 import * as mqtt from 'async-mqtt'
-import yaml from './yaml'
+import bus from "./bus"
+import { getConfig } from "./config"
 
 let client = null
 
-export const initialize = async () => {
+const initialize = async () => {
   let url: string
   try {
     const data = await getMqttInfo()
@@ -25,7 +26,7 @@ export const initialize = async () => {
 
 export const syncCameras = async () => {
   if (!client) return
-  const cameras = yaml.getCameras()
+  const cameras = getConfig().cameras
   for (const camera of cameras) {
     const topic = `homeassistant/binary_sensor/nanonvr/${camera.uuid}/config`
     const body = JSON.stringify({
@@ -46,7 +47,7 @@ export const syncCameras = async () => {
 
 export const resetCameras = async () => {
   if (!client) return
-  const cameras = yaml.getCameras()
+  const cameras = getConfig().cameras
   for (const camera of cameras) {
     await client.publish(
       `nanonvr/cams/${camera.uuid}`,
@@ -90,3 +91,5 @@ export const sendEvent = async (camId: string) => {
   const newTimer = global.setTimeout(reset, motionDuration)
   timerMap.set(camId, newTimer)
 }
+
+bus.once('configLoaded', initialize)
