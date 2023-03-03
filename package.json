@@ -9,22 +9,21 @@
     "koa-router": "^10.1.1"
   },
   "devDependencies": {
-    "@gluedigital/ruse-fetch-extras": "^1.2.6",
+    "@gluedigital/ruse-fetch-extras": "^1.2.7",
     "@types/jest": "^28.1.6",
     "@types/koa-router": "^7.4.4",
     "@types/sqlite3": "^3.1.8",
     "@types/uuid": "^8.3.4",
     "chokidar": "^3.5.3",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-intl": "^5.8.6",
     "react-redux": "^7.2.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "universal-scripts": "^2.7.2",
+    "universal-scripts": "^2.8.0",
     "uuid": "^8.3.2",
-    "yaml": "^2.1.3",
-    "zod": "^3.19.1"
+    "yaml": "^2.1.3"
   },
   "scripts": {
     "start": "universal-scripts start",
