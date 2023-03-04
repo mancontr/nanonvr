@@ -7,6 +7,7 @@
  */
 
 import path from 'path'
+import { Config } from 'src/types'
 import bus from '../bus'
 import defaultConfig from './default'
 import Yaml from './yaml'
@@ -26,4 +27,8 @@ export const init = async () => {
 }
 
 export const getConfig = () => yaml.getContents()
-export const getConfigHandler = () => yaml
+export const setConfig = (config: Config) => {
+  yaml.setContents(config)
+  yaml.save()
+  bus.emit('configUpdated', config)
+}

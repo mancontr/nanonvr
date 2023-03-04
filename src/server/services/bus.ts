@@ -3,6 +3,7 @@ import { Config } from 'src/types'
 
 interface BusEvents {
   configLoaded: (config: Config) => void
+  configUpdated: (config: Config) => void
 }
 
 declare interface Bus {

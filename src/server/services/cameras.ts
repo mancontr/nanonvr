@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 import { Camera } from 'src/types'
-import { getConfig, getConfigHandler } from './config'
+import { getConfig, setConfig } from './config'
 
 export const getCameras = (): Camera[] => {
   return getConfig().cameras || []
@@ -11,32 +11,26 @@ export const getCamera = (id: string): Camera | undefined => {
 }
 
 export const addCamera = (camera: Camera): void => {
-  const hnd = getConfigHandler()
-  const config = hnd.getContents()
-  hnd.setContents({
+  const config = getConfig()
+  setConfig({
     ...config,
     cameras: [
       ...config.cameras,
       { ...camera, uuid: uuid() }
     ]
   })
-  hnd.save()
 }
 
 export const updateCamera = (id: string, camera: Camera): void => {
-  const hnd = getConfigHandler()
-  const config = hnd.getContents()
+  const config = getConfig()
   const newCameras = config.cameras.slice()
   const idx = newCameras.findIndex(cam => cam.uuid === id)
   newCameras[idx] = camera
-  hnd.setContents({ ...config, cameras: newCameras })
-  hnd.save()
+  setConfig({ ...config, cameras: newCameras })
 }
 
 export const removeCamera = (id: string): void => {
-  const hnd = getConfigHandler()
-  const config = hnd.getContents()
+  const config = getConfig()
   const newCameras = config.cameras.filter(cam => cam.uuid !== id)
-  hnd.setContents({ ...config, cameras: newCameras })
-  hnd.save()
+  setConfig({ ...config, cameras: newCameras })
 }
