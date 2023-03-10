@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import Loading from 'src/components/Loading/Loading'
 import { useCamera, useCameraCRUD } from 'src/hooks/api'
 import { Camera } from 'src/types'
+import CamStatus from './CamStatus'
 
 const emptyCam: Camera = {
   uuid: null,
@@ -76,6 +77,9 @@ const CamEditWrapper = () => {
       <Suspense fallback={<Loading />}>
         <CamEdit />
       </Suspense>
+      {id &&
+        <CamStatus />
+      }
     </main>
   )
 }

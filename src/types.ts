@@ -6,6 +6,11 @@ export interface Camera {
   snapshot?: string
 }
 
+export interface CameraStatus {
+  status: 'IDLE' | 'ACTIVE' | 'RESTARTING'
+  logs: string[]
+}
+
 export interface Track {
   uuid: string
   filename: string

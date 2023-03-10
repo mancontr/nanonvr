@@ -1,6 +1,7 @@
 import Router from 'koa-router'
 import { getConfig } from '../services/config'
 import * as cameras from '../services/cameras'
+import { Recorder } from '../services/ffmpeg'
 
 export const getCameras: Router.IMiddleware = (ctx) => {
   const cams = getConfig().cameras
@@ -10,6 +11,14 @@ export const getCameras: Router.IMiddleware = (ctx) => {
 export const getCamera: Router.IMiddleware = (ctx) => {
   const cam = getConfig().cameras.find(cam => cam.uuid === ctx.params.id)
   ctx.body = cam
+}
+
+export const getCameraStatus: Router.IMiddleware = (ctx) => {
+  const rec = Recorder.get(ctx.params.id)
+  ctx.body = {
+    status: rec.getStatus(),
+    logs: rec.getLogs(),
+  }
 }
 
 export const getThumb: Router.IMiddleware = async (ctx) => {

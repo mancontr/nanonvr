@@ -1,0 +1,56 @@
+.cam-status
+  margin-top: 40px
+
+  h3
+    display: inline-block
+    margin: 0 0 10px
+
+  .key:after
+    content: ': '
+
+  .status
+    margin-left: 15px
+
+  .status:before
+    content: ''
+    display: inline-block
+    width: 8px
+    height: 8px
+    border-radius: 100%
+    background-color: #ff8000
+    vertical-align: middle
+    margin: 3px
+
+  .status-active:before
+    background-color: #00ff00
+
+  .icon-history
+    background-color: #888
+    border: 1px solid #ccc
+    border-radius: 2px
+    cursor: pointer
+    display: inline-block
+    font-size: 90%
+    line-height: 16px
+    margin-left: 20px
+    text-align: center
+    vertical-align: middle
+    height: 16px
+    width: 16px
+
+  .log-lines
+    background-color: #444
+    display: flex
+    flex: 1 1 auto
+    flex-direction: column-reverse
+    font-family: monospace
+    overflow-y: scroll
+    padding: 5px
+    margin-top: 3px
+    height: 200px
+    width: 450px
+
+    .log-line
+      word-break: break-word
+      &.highlighted
+        color: #00ff00

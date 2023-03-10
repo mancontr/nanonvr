@@ -49,8 +49,8 @@ export class Recorder {
     this.status = 'ACTIVE'
     this.stopping = false
     this.process = spawn('ffmpeg', this.getParams())
-    this.process.stdout.on('data', msg => this.log(msg))
-    this.process.stderr.on('data', msg => this.log(msg))
+    this.process.stdout.on('data', msg => this.log(msg.toString()))
+    this.process.stderr.on('data', msg => this.log(msg.toString()))
     this.process.on('close', code => {
       this.log(`*** Recording stopped (status=${code})`)
       if (this.stopping) {
@@ -85,6 +85,10 @@ export class Recorder {
     return this.status
   }
 
+  getLogs() {
+    return this.output
+  }
+
   private log(msg: string) {
     this.output.push(msg)
     if (this.output.length > 100) this.output.shift()
@@ -93,7 +97,7 @@ export class Recorder {
   private getParams() {
     return [
       '-hide_banner',
-      '-loglevel', 'error',
+      '-loglevel', 'warning',
       // '-stimeout', '3000000',
       '-rtsp_transport', 'tcp',
       '-i', this.url,

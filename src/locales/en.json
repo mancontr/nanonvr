@@ -1,4 +1,10 @@
 {
+  "cam-status.logs": "Logs",
+  "cam-status.state": "State",
+  "cam-status.state.active": "Recording",
+  "cam-status.state.idle": "Waiting",
+  "cam-status.state.restarting": "Restarting",
+  "cam-status.title": "Status",
   "config.cams.add": "Add camera",
   "config.cams.title": "Cameras:",
   "config.edit.add": "Add",
