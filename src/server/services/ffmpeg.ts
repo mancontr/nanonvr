@@ -1,67 +1,134 @@
 import { mkdirSync } from 'fs'
 import path from 'path'
 import { ChildProcess, spawn, exec } from 'child_process'
-import { Camera } from 'src/types'
+import { Camera, Config } from 'src/types'
 import bus from './bus'
 import { getConfig } from './config'
 
-export interface FfmpegThreadInfo {
-  process?: ChildProcess
-  restart?: boolean
-}
+type RecorderStatus = 'IDLE' | 'ACTIVE' | 'RESTARTING'
 
-const threads = new Map<string, FfmpegThreadInfo>()
+export class Recorder {
+  private static threads = new Map<string, Recorder>()
+  private url: string
+  private folder: string
+  private title: string
+  private status: RecorderStatus
+  private output: string[]
+  private process: ChildProcess
+  private stopping: boolean
 
-const getOrCreateThreadInfo = (id: string): FfmpegThreadInfo => {
-  const oldInfo = threads.get(id)
-  if (oldInfo) return oldInfo
-  const newInfo = { restart: true }
-  threads.set(id, newInfo)
-  return newInfo
-}
+  static getIds() {
+    return Array.from(Recorder.threads.keys())
+  }
 
-export const startRecordingCam = (cam: Camera) => {
-  const config = getConfig()
-  const info = getOrCreateThreadInfo(cam.uuid)
-  if (info.process) return // Already running
+  static get(id: string) {
+    return Recorder.threads.get(id)
+  }
 
-  const folder = path.join(config.folders.video, cam.uuid)
-  mkdirSync(folder, { recursive: true })
+  static getOrCreate(config: Config, cam: Camera) {
+    if (Recorder.threads.has(cam.uuid)) return Recorder.threads.get(cam.uuid)
+    const newRecorder = new Recorder(config, cam)
+    Recorder.threads.set(cam.uuid, newRecorder)
+    return newRecorder
+  }
 
-  const target = path.join(folder, '%Y-%m-%d %H-%M-%S.mp4')
+  private constructor(config: Config, cam: Camera) {
+    this.url = cam.streamMain
+    this.folder = path.join(config.folders.video, cam.uuid)
+    this.title = cam.name
+    this.status = 'IDLE'
+    this.output = []
+    this.process = null
+    this.stopping = false
+  }
 
-  console.debug('* Recording started for', cam.name)
+  start() {
+    if (this.status === 'ACTIVE') return
+    this.log('*** Recording starting...')
+    mkdirSync(this.folder, { recursive: true })
+    this.status = 'ACTIVE'
+    this.stopping = false
+    this.process = spawn('ffmpeg', this.getParams())
+    this.process.stdout.on('data', msg => this.log(msg))
+    this.process.stderr.on('data', msg => this.log(msg))
+    this.process.on('close', code => {
+      this.log(`*** Recording stopped (status=${code})`)
+      if (this.stopping) {
+        this.status = 'IDLE'
+      } else {
+        this.status = 'RESTARTING'
+        setTimeout(() => this.start(), 10000)
+      }
+    })
+  }
 
-  const cmd = info.process = spawn('ffmpeg', [
-    '-hide_banner',
-    '-loglevel', 'error',
-    // '-stimeout', '3000000',
-    '-rtsp_transport', 'tcp',
-    '-i', cam.streamMain,
-    '-an',
-    '-vcodec', 'copy',
-    '-f', 'segment',
-    '-segment_format_options', 'movflags=+empty_moov+separate_moof+frag_keyframe',
-    '-strftime', '1',
-    '-segment_time', '600',
-    '-segment_atclocktime', '1',
-    '-metadata', 'title=' + cam.name,
-    target
-  ])
-  cmd.stdout.on('data', text => console.warn('[ffmpeg]', text.toString()))
-  cmd.stderr.on('data', text => console.warn('[ffmpeg]', text.toString()))
-  cmd.on('close', code => {
-    console.log(`* Recording stopped for ${cam.name} (status=${code})`)
-    info.process = null
-    if (info.restart) {
-      setTimeout(() => startRecordingCam(cam), 10000)
+  stop() {
+    this.stopping = true
+    this.process.kill()
+  }
+
+  update(config: Config, cam: Camera) {
+    const newFolder = path.join(config.folders.video, cam.uuid)
+    const changed = this.url !== cam.streamMain
+      || this.folder !== newFolder
+      || this.title !== cam.name
+
+    if (changed) {
+      this.url = cam.streamMain
+      this.folder = newFolder
+      this.title = cam.name
+      if (this.status === 'ACTIVE') this.process?.kill() // Force a restart
     }
-  })
+  }
+
+  getStatus() {
+    return this.status
+  }
+
+  private log(msg: string) {
+    this.output.push(msg)
+    if (this.output.length > 100) this.output.shift()
+  }
+
+  private getParams() {
+    return [
+      '-hide_banner',
+      '-loglevel', 'error',
+      // '-stimeout', '3000000',
+      '-rtsp_transport', 'tcp',
+      '-i', this.url,
+      '-an',
+      '-vcodec', 'copy',
+      '-f', 'segment',
+      '-segment_format_options', 'movflags=+empty_moov+separate_moof+frag_keyframe',
+      '-strftime', '1',
+      '-segment_time', '600',
+      '-segment_atclocktime', '1',
+      '-metadata', 'title=' + this.title,
+      path.join(this.folder, '%Y-%m-%d %H-%M-%S.mp4')
+    ]
+  }
+
 }
 
-export const startRecordingAll = async () => {
-  const cameras = getConfig().cameras
-  cameras.forEach(startRecordingCam)
+const sync = async () => {
+  const config = getConfig()
+  const currIds = Recorder.getIds()
+
+  // Stop any no-longer-needed recorder
+  const camIds = new Set(config.cameras.map(c => c.uuid))
+  const toStop = currIds.filter(id => !camIds.has(id))
+  for (const id of toStop) Recorder.get(id).stop()
+
+  // Start or update all others
+  for (const cam of config.cameras) {
+    const rec = Recorder.getOrCreate(config, cam)
+    if (rec.getStatus() === 'ACTIVE') {
+      rec.update(config, cam)
+    } else {
+      rec.start()
+    }
+  }
 }
 
 export const getVideoLength = async (file: string): Promise<number> => {
@@ -73,4 +140,5 @@ export const getVideoLength = async (file: string): Promise<number> => {
   return secs
 }
 
-bus.once('configLoaded', startRecordingAll)
+bus.once('configLoaded', sync)
+bus.on('configUpdated', sync)
