@@ -15,9 +15,16 @@ export const getCamera: Router.IMiddleware = (ctx) => {
 
 export const getCameraStatus: Router.IMiddleware = (ctx) => {
   const rec = Recorder.get(ctx.params.id)
-  ctx.body = {
-    status: rec.getStatus(),
-    logs: rec.getLogs(),
+  if (rec) {
+    ctx.body = {
+      status: rec.getStatus(),
+      logs: rec.getLogs(),
+    }
+  } else {
+    ctx.body = {
+      status: 'UNKNOWN',
+      logs: []
+    }
   }
 }
 

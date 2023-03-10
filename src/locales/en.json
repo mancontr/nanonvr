@@ -4,6 +4,7 @@
   "cam-status.state.active": "Recording",
   "cam-status.state.idle": "Waiting",
   "cam-status.state.restarting": "Restarting",
+  "cam-status.state.unknown": "Unknown",
   "cam-status.title": "Status",
   "config.cams.add": "Add camera",
   "config.cams.title": "Cameras:",
