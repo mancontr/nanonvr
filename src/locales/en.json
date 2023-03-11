@@ -2,7 +2,7 @@
   "cam-status.logs": "Logs",
   "cam-status.state": "State",
   "cam-status.state.active": "Recording",
-  "cam-status.state.idle": "Waiting",
+  "cam-status.state.idle": "Stopped",
   "cam-status.state.restarting": "Restarting",
   "cam-status.state.unknown": "Unknown",
   "cam-status.title": "Status",

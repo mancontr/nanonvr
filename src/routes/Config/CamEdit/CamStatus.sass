@@ -9,7 +9,9 @@
     content: ': '
 
   .status
+    display: inline-block
     margin-left: 15px
+    width: 90px
 
   .status:before
     content: ''
@@ -27,19 +29,22 @@
   .status-idle:before
     background-color: #ff8000
 
-  .icon-history
-    background-color: #888
-    border: 1px solid #ccc
-    border-radius: 2px
-    cursor: pointer
-    display: inline-block
-    font-size: 90%
-    line-height: 16px
-    margin-left: 20px
-    text-align: center
-    vertical-align: middle
-    height: 16px
-    width: 16px
+  .icon-area
+    margin-left: 15px
+
+    .icon
+      background-color: #888
+      border: 1px solid #ccc
+      border-radius: 2px
+      cursor: pointer
+      display: inline-block
+      font-size: 90%
+      line-height: 16px
+      margin-right: 10px
+      text-align: center
+      vertical-align: middle
+      height: 16px
+      width: 16px
 
   .log-lines
     background-color: #444

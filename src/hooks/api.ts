@@ -12,7 +12,9 @@ export const useCameraCRUD = () => {
   const crud = useCRUD<string, Camera>(base + '/cameras')
   return {
     ...crud,
-    getStatus: (id: string) => crud.custom(`/${id}/status`)
+    getStatus: (id: string) => crud.custom(`/${id}/status`),
+    recordStart: (id: string) => crud.custom(`/${id}/record/start`, { method: 'POST' }),
+    recordStop: (id: string) => crud.custom(`/${id}/record/stop`, { method: 'POST' }),
   }
 }
 

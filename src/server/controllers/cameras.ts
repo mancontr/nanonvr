@@ -28,6 +28,18 @@ export const getCameraStatus: Router.IMiddleware = (ctx) => {
   }
 }
 
+export const recordStart: Router.IMiddleware = (ctx) => {
+  const rec = Recorder.get(ctx.params.id)
+  rec.start()
+  ctx.body = {}
+}
+
+export const recordStop: Router.IMiddleware = (ctx) => {
+  const rec = Recorder.get(ctx.params.id)
+  rec.stop()
+  ctx.body = {}
+}
+
 export const getThumb: Router.IMiddleware = async (ctx) => {
   const cam = getConfig().cameras.find(cam => cam.uuid === ctx.params.id)
   if (!cam.snapshot) ctx.throw(404, 'Not Found')

@@ -51,8 +51,8 @@ export class Recorder {
     this.process = spawn('ffmpeg', this.getParams())
     this.process.stdout.on('data', msg => this.log(msg.toString()))
     this.process.stderr.on('data', msg => this.log(msg.toString()))
-    this.process.on('close', code => {
-      this.log(`*** Recording stopped (status=${code})`)
+    this.process.on('close', () => {
+      this.log(`*** Recording stopped`)
       if (this.stopping) {
         this.status = 'IDLE'
       } else {
@@ -64,7 +64,7 @@ export class Recorder {
 
   stop() {
     this.stopping = true
-    this.process.kill()
+    this.process?.kill()
   }
 
   update(config: Config, cam: Camera) {

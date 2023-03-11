@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useParams } from 'react-router-dom'
 import { useCameraCRUD, useCameraStatus } from 'src/hooks/api'
@@ -19,6 +19,14 @@ const CamStatus = () => {
       .then(currentCamStatus => setCamStatus(currentCamStatus))
   }
 
+  const start = () => actions.recordStart(id).then(refresh)
+  const stop = () => actions.recordStop(id).then(refresh)
+
+  useEffect(() => {
+    const t = setInterval(refresh, 5000)
+    return () => clearInterval(t)
+  }, []) // TODO: Missing dependency, but it would cause a rerender loop
+
   return (
     <div className="cam-status">
       <div>
@@ -28,7 +36,15 @@ const CamStatus = () => {
         <span className={'status status-' + statusLC}>
           <FormattedMessage id={'cam-status.state.' + statusLC} />
         </span>
-        <span className="icon icon-history" onClick={refresh} />
+        <span className="icon-area">
+          <span title="Refresh" className="icon icon-history" onClick={refresh} />
+          {status === 'ACTIVE' &&
+            <span title="Stop recording" className="icon icon-stop" onClick={stop} />
+          }
+          {status === 'IDLE' &&
+            <span title="Start recording" className="icon icon-play" onClick={start} />
+          }
+        </span>
       </div>
       <div className="logs">
         <span className="key">
