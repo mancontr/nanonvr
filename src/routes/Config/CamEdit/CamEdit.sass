@@ -1,0 +1,40 @@
+#config-cam-edit
+  h2
+    margin-top: 0
+
+  label
+    display: flex
+    margin-bottom: 8px
+    width: 450px
+    max-width: 100%
+
+    span
+      flex: 0 0 auto
+      width: 100px
+      &::after
+        content: ': '
+
+    input
+      flex: 1 1 auto
+      min-width: 50px
+      background-color: #444
+      color: white
+      border: 0
+      padding: 4px 6px
+
+      &:focus
+        outline: 1px solid #88f
+
+  .buttons
+    margin-top: 20px
+
+  button
+    background-color: #666
+    border: 1px solid #888
+    cursor: pointer
+    margin-right: 10px
+    height: 23px
+    width: 80px
+
+    &:focus
+      outline: 1px solid #88f

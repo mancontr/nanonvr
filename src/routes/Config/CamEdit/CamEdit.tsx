@@ -6,6 +6,8 @@ import { useCamera, useCameraCRUD } from 'src/hooks/api'
 import { Camera } from 'src/types'
 import CamStatus from './CamStatus'
 
+import './CamEdit.sass'
+
 const emptyCam: Camera = {
   uuid: null,
   name: '',
@@ -57,14 +59,16 @@ const CamEdit = () => {
         <span><FormattedMessage id="config.edit.field.snapshot" /></span>
         <input name="snapshot" type="url" value={cam.snapshot} onChange={handleChange} />
       </label>
-      <button className="primary">
-        <FormattedMessage id={'config.edit.' + (id ? 'save' : 'add')} />
-      </button>
-      {id &&
-        <button onClick={handleRemove}>
-          <FormattedMessage id="config.edit.remove" />
+      <div className="buttons">
+        <button className="primary">
+          <FormattedMessage id={'config.edit.' + (id ? 'save' : 'add')} />
         </button>
-      }
+        {id &&
+          <button onClick={handleRemove}>
+            <FormattedMessage id="config.edit.remove" />
+          </button>
+        }
+      </div>
     </form>
   )
 }

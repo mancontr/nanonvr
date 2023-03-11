@@ -29,7 +29,7 @@ const CamStatus = () => {
 
   return (
     <div className="cam-status">
-      <div>
+      <header>
         <h3>
           <FormattedMessage id="cam-status.title" />
         </h3>
@@ -45,7 +45,7 @@ const CamStatus = () => {
             <span title="Start recording" className="icon icon-play" onClick={start} />
           }
         </span>
-      </div>
+      </header>
       <div className="logs">
         <span className="key">
           <FormattedMessage id="cam-status.logs" />
