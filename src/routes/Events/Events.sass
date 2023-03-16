@@ -1,13 +1,16 @@
 #root #events
   padding: 0
   display: flex
-  flex-direction: column
+  flex-direction: row-reverse
   height: 100%
+  width: 100%
   overflow: hidden
 
   .main
     flex: 1 1 auto
     min-height: 0
+    min-width: 0
+    max-height: 100%
     max-width: 100%
     overflow: hidden
     display: flex
@@ -29,34 +32,36 @@
 
   .thumbs
     flex: 0 0 auto
-    overflow-x: auto
-    overflow-y: hidden
-    white-space: nowrap
+    overflow: hidden scroll
+    display: flex
+    flex-direction: column
+    min-width: 0
 
     &::-webkit-scrollbar
       height: 8px
+      width: 8px
     &::-webkit-scrollbar-track
       background-color: #222
     &::-webkit-scrollbar-thumb
       background-color: #444
 
-    &::before, &::after
-      content: ''
-      display: inline-block
-      height: 1px
-      width: calc(50vw - 96px)
-
     .event-card
       border: 1px solid #444
       cursor: pointer
-      display: inline-flex
+      display: flex
+      flex: 0 0 auto
       position: relative
-      margin: 10px 5px
-      vertical-align: middle
+      margin: 10px
+      height: 108px
+      width: 192px
+
+      + .event-card
+        margin-top: 0
 
       img, video
-        height: 108px
-        width: 192px
+        flex: 1 1 auto
+        min-width: 0
+        min-height: 0
         object-fit: cover
 
       .overlay
@@ -73,3 +78,18 @@
 
       &.active
         border: 1px solid #ccc
+
+  @media (max-aspect-ratio: 4/3)
+    flex-direction: column
+    .thumbs
+      flex-direction: row
+      overflow: scroll hidden
+      .event-card + .event-card
+        margin-top: 10px
+        margin-left: 0
+      &::before, &::after
+        content: ''
+        display: inline-block
+        flex: 0 0 auto
+        height: 1px
+        width: calc(50vw - 96px)

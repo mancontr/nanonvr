@@ -12,10 +12,10 @@ const Events = () => {
 
   useEffect(() => {
     const handler = e => {
-      if (e.key === 'ArrowLeft') {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
         setCurrent(c => c > 0 ? c - 1 : 0)
         e.preventDefault()
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         setCurrent(c => c < events.length - 1 ? c + 1 : c)
         e.preventDefault()
       }
@@ -62,7 +62,7 @@ const EventCard = ({ event, isBig, active, ...other }: EventCardProps) => {
 
   useEffect(() => {
     if (active) {
-      ref.current.scrollIntoView({ behavior: 'smooth', inline: 'center' })
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
   }, [active])
 
