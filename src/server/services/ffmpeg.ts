@@ -98,7 +98,7 @@ export class Recorder {
     return [
       '-hide_banner',
       '-loglevel', 'warning',
-      // '-stimeout', '3000000',
+      '-timeout', '5000000',
       '-rtsp_transport', 'tcp',
       '-i', this.url,
       '-an',
