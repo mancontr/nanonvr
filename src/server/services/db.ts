@@ -1,3 +1,4 @@
+import { mkdirSync } from 'fs'
 import path from 'path'
 import SqliteDatabase from 'better-sqlite3'
 import { Track, Event, Config } from 'src/types'
@@ -7,6 +8,7 @@ export class Database {
   db: SqliteDatabase = null
 
   initialize(dbPath: string) {
+    mkdirSync(path.dirname(dbPath), { recursive: true })
     this.db = new SqliteDatabase(dbPath)
 
     // Create tables
