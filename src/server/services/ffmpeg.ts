@@ -95,12 +95,14 @@ export class Recorder {
   }
 
   private getParams() {
+    const isRtsp = this.url.startsWith('rtsp:')
     return [
       '-hide_banner',
       '-loglevel', 'warning',
       '-timeout', '5000000',
-      '-rtsp_transport', 'tcp',
+      isRtsp && '-rtsp_transport', isRtsp && 'tcp',
       '-i', this.url,
+      '-use_wallclock_as_timestamps', '1',
       '-an',
       '-vcodec', 'copy',
       '-f', 'segment',
@@ -110,7 +112,7 @@ export class Recorder {
       '-segment_atclocktime', '1',
       '-metadata', 'title=' + this.title,
       path.join(this.folder, '%Y-%m-%d %H-%M-%S.mp4')
-    ]
+    ].filter(x => x)
   }
 
 }
