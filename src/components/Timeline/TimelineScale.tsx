@@ -46,7 +46,7 @@ const TimelineScale = () => {
           const style = { left: (b - slice[0]) * 100 / length + '%' }
           return <div key={b} className="scale-mark low" style={style} />
         })}
-        {playPoint &&
+        {playPoint && playPoint.ts &&
           <div
             className="needle"
             style={{ left: (playPoint.ts - slice[0]) * 100 / length + '%' }}

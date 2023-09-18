@@ -27,7 +27,7 @@ const TimelineLayers = () => {
             <CameraRecords cam={cam.uuid} active={cam.uuid === playPoint?.camId} />
           </Suspense>
         )}
-        {playPoint &&
+        {playPoint && playPoint.ts &&
           <div className="needle" style={{ left: (playPoint.ts - slice[0]) * 100 / (slice[1] - slice[0]) + '%' }} />
         }
       </div>
