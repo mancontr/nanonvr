@@ -20,7 +20,7 @@ const Controls = () => {
       <div className="control-block" />
       <div className="control-block">
         <div className="button icon-play disabled" />
-        <div className={'button icon-stop' + (url ? '' : ' disabled')} onClick={stop} />
+        <div className={'button icon-stop' + (playPoint ? '' : ' disabled')} onClick={stop} />
         <a className={'button icon-download' + (url ? '' : ' disabled')} download href={url} />
       </div>
       <div className="control-block">
