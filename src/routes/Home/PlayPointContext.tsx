@@ -1,10 +1,14 @@
 import React, { createContext, useContext, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { PlayPoint } from 'src/types'
 
 const PlayPointContext = createContext<[PlayPoint, (p: PlayPoint) => void]>(null)
 
 export const PlayPointProvider = ({ children }) => {
-  const [playPoint, setPlayPoint] = useState<PlayPoint>()
+  const loc = useLocation<any>()
+  const [playPoint, setPlayPoint] = useState<PlayPoint>(() => {
+    if (loc.state?.camId && loc.state?.ts) return { camId: loc.state.camId, ts: parseInt(loc.state.ts) }
+  })
   return (
     <PlayPointContext.Provider value={[playPoint, setPlayPoint]}>
       {children}

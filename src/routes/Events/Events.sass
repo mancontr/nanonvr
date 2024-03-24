@@ -30,20 +30,43 @@
     .alert
       color: #d72
 
-  .thumbs
+  .bar
     flex: 0 0 auto
-    overflow: hidden scroll
     display: flex
     flex-direction: column
-    min-width: 0
 
-    &::-webkit-scrollbar
-      height: 8px
-      width: 8px
-    &::-webkit-scrollbar-track
-      background-color: #222
-    &::-webkit-scrollbar-thumb
-      background-color: #444
+    .actions
+      // background-color: #101e24
+      flex: 0 0 auto
+      display: flex
+      flex-direction: row
+      align-items: center
+      justify-content: center
+
+      .icon
+        border: 1px solid #444
+        cursor: pointer
+        height: 26px
+        width: 26px
+        margin: 10px 5px
+        line-height: 26px
+        text-align: center
+        vertical-align: middle
+
+    .thumbs
+      flex: 1 1 auto
+      display: flex
+      flex-direction: column
+      min-width: 0
+      overflow: hidden scroll
+
+      &::-webkit-scrollbar
+        height: 8px
+        width: 8px
+      &::-webkit-scrollbar-track
+        background-color: #222
+      &::-webkit-scrollbar-thumb
+        background-color: #444
 
     .event-card
       border: 1px solid #444
@@ -56,6 +79,9 @@
       width: 192px
 
       + .event-card
+        margin-top: 0
+
+      &:first-child
         margin-top: 0
 
       img, video
@@ -81,15 +107,24 @@
 
   @media (max-aspect-ratio: 4/3)
     flex-direction: column
-    .thumbs
+    .bar
       flex-direction: row
-      overflow: scroll hidden
-      .event-card + .event-card
+      .actions
+        display: grid
+        align-content: center
+        grid-template-columns: auto auto
+        .icon
+          margin: 5px
+      .thumbs
+        flex-direction: row
+        overflow: scroll hidden
+        &::before, &::after
+          content: ''
+          display: inline-block
+          flex: 0 0 auto
+          height: 1px
+          width: calc(50vw - 96px)
+      .event-card + .event-card,
+      .event-card:first-child
         margin-top: 10px
         margin-left: 0
-      &::before, &::after
-        content: ''
-        display: inline-block
-        flex: 0 0 auto
-        height: 1px
-        width: calc(50vw - 96px)
