@@ -34,7 +34,7 @@ export class Recorder {
 
   private constructor(config: Config, cam: Camera) {
     this.url = cam.streamMain
-    this.folder = path.join(config.folders.video, cam.uuid)
+    this.folder = path.join(config.folders.video, cam.uuid, 'temp')
     this.title = cam.name
     this.status = 'IDLE'
     this.output = []
@@ -68,7 +68,7 @@ export class Recorder {
   }
 
   update(config: Config, cam: Camera) {
-    const newFolder = path.join(config.folders.video, cam.uuid)
+    const newFolder = path.join(config.folders.video, cam.uuid, 'temp')
     const changed = this.url !== cam.streamMain
       || this.folder !== newFolder
       || this.title !== cam.name
@@ -106,9 +106,9 @@ export class Recorder {
       '-an',
       '-vcodec', 'copy',
       '-f', 'segment',
-      '-segment_format_options', 'movflags=+empty_moov+separate_moof+frag_keyframe',
+      '-segment_format_options', 'movflags=+faststart',
       '-strftime', '1',
-      '-segment_time', '600',
+      '-segment_time', '60',
       '-segment_atclocktime', '1',
       '-metadata', 'title=' + this.title,
       path.join(this.folder, '%Y-%m-%d %H-%M-%S.mp4')

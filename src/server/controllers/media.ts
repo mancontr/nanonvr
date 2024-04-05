@@ -4,7 +4,7 @@ import { getConfig } from '../services/config'
 
 export const serveTrack: Router.IMiddleware = async (ctx) => {
   const { camId, track } = ctx.params
-  const target = camId + '/' + track
+  const target = [camId, track.substring(0, 10), track].join('/')
   await send(ctx, target, { root: getConfig().folders.video })
 }
 

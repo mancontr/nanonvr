@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import db from 'src/server/services/db'
-import { Track } from 'src/types'
 import getMp4Length from 'src/util/getMp4Length'
 import bus from './bus'
 import { getConfig } from './config'
@@ -15,7 +14,7 @@ const start = () => {
       } catch (e) {
         console.error(e)
       }
-      await new Promise(resolve => setTimeout(resolve, 10000))
+      await new Promise(resolve => setTimeout(resolve, 30000))
     }
   }
   setTimeout(worker, 1000)
@@ -36,48 +35,45 @@ const start = () => {
  * @param camId The target camera
  */
 const handleUpdate = async (camId: string): Promise<void> => {
+  const base = getConfig().folders.video
 
-  // Get a list of known tracks for this camera
-  const known = db.getTracks(camId)
-
-  // Get a list of current files for this camera
-  const folder = path.join(getConfig().folders.video, camId)
+  // Get a list of pending files for this camera
+  const folder = path.join(base, camId, 'temp')
   if (!fs.existsSync(folder)) return
   const files = getFolderFiles(folder)
+  console.log('Files:', files)
 
-  // Create some fast lookup maps/sets
-  const dbMap = new Map<string, Track>(known.map(track => [track.filename, track]))
-  const fileSet = new Set<string>(files.map(file => file.filename))
-
-  // Check what needs to be updated ...
-  const added = files.filter(file => !dbMap.has(file.filename))
-  const removed = known.filter(track => !fileSet.has(track.filename))
-  const updated = files.filter(file => dbMap.has(file.filename) && file.filesize !== dbMap.get(file.filename).filesize)
-
-  // Perform the updates
-  for (const track of removed) {
-    db.removeTrack(camId, track.filename)
-  }
-  for (const file of added) {
+  for (const file of files) {
+    // Ignore files that might still be incomplete
+    const isLatest = file === files[0]
+    const isReady = !isLatest || file.age > 70000
+    if (!isReady) continue
+    // First move it to its final location
+    const day = file.filename.substring(0, 10)
+    const dstFolder = path.join(base, camId, day)
+    const dstPath = path.join(dstFolder, file.filename)
+    fs.mkdirSync(dstFolder, { recursive: true })
+    fs.renameSync(file.filepath, dstPath)
+    file.filepath = dstPath
+    // Add it to the DB
     db.addTrack(camId, {
       ...file,
       uuid: camId,
       length: await getMp4Length(file.filepath)
     })
   }
-  for (const file of updated) {
-    db.updateTrack(camId, file.filename, {
-      ...file,
-      uuid: camId,
-      length: await getMp4Length(file.filepath)
-    })
-  }
+
+  // Also check if some old ones need to be deleted
+  db.getTracks(camId)
+    .filter(track => !fs.existsSync(path.join(base, camId, track.filename.substring(0, 10), track.filename)))
+    .forEach(track => db.removeTrack(camId, track.filename))
 }
 
 interface TrackFileInfo {
   filename: string
   filepath: string
   filesize: number
+  age: number
 }
 
 const getFolderFiles = (folder: string): TrackFileInfo[] =>
@@ -91,6 +87,7 @@ const getFolderFiles = (folder: string): TrackFileInfo[] =>
         filename,
         filepath,
         filesize: stats.size,
+        age: Date.now() - stats.mtime.valueOf()
       }
     })
 
