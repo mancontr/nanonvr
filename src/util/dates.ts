@@ -1,16 +1,22 @@
-import { Track } from 'src/types'
+import { TrackGroup } from 'src/types'
 
-export const trackAddDates = (track: Track) => {
-  const start = new Date(
-    parseInt(track.filename.substring(0, 4)),
-    parseInt(track.filename.substring(5, 7)) - 1,
-    parseInt(track.filename.substring(8, 10)),
-    parseInt(track.filename.substring(11, 13)),
-    parseInt(track.filename.substring(14, 16)),
-    parseInt(track.filename.substring(17, 19)),
-  ).getTime()
-  const end = start + track.length * 1000
-  return { ...track, start, end }
+const filename2localDate = (filename) => new Date(
+  parseInt(filename.substring(0, 4)),
+  parseInt(filename.substring(5, 7)) - 1,
+  parseInt(filename.substring(8, 10)),
+  parseInt(filename.substring(11, 13)),
+  parseInt(filename.substring(14, 16)),
+  parseInt(filename.substring(17, 19)),
+).getTime()
+
+export const trackGroupAddDates = (track: TrackGroup) => {
+  const start = filename2localDate(track.start)
+  const end = filename2localDate(track.end)
+  const tracks = track.tracks.map(str => ({
+    filename: str,
+    start: filename2localDate(str),
+  }))
+  return { start, end, tracks }
 }
 
 /**

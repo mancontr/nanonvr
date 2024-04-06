@@ -2,18 +2,17 @@ import React from 'react'
 import basename from 'src/util/basename'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
 import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
-import { Track } from 'src/types'
 import './Feeds.sass'
 
 const Feeds = () => {
   const playPoint = usePlayPoint()
-  const track: Track = useTrackFromPlayPoint(playPoint)
+  const track: string = useTrackFromPlayPoint(playPoint)
 
-  const url = track && `${basename}/media/${track.uuid}/${track.filename}`
+  const url = track && `${basename}/media/${playPoint.camId}/${track}`
   return (
     <div id="feeds">
       {track &&
-        <video key={track.uuid + '/' + track.filename} autoPlay>
+        <video key={playPoint.camId + '/' + track} autoPlay>
           <source src={url} />
         </video>
       }

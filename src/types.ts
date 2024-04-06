@@ -26,6 +26,12 @@ export interface Event {
   isVideo: boolean
 }
 
+export interface TrackGroup {
+  start: string
+  end: string
+  tracks: string[]
+}
+
 export interface PlayPoint {
   camId: string
   ts?: number

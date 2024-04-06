@@ -1,5 +1,5 @@
 import { useCRUD, useFetch } from '@gluedigital/ruse-fetch-extras'
-import { Camera, CameraStatus, Event, Track } from 'src/types'
+import { Camera, CameraStatus, Event, TrackGroup } from 'src/types'
 import basename from 'src/util/basename'
 
 const base = basename + '/api'
@@ -18,6 +18,6 @@ export const useCameraCRUD = () => {
   }
 }
 
-export const useCameraTracks = (id: string) => useFetch<Track[]>(id && (base + '/cameras/' + id + '/tracks'), null, 'tracks-' + id)
+export const useCameraTracks = (id: string) => useFetch<TrackGroup[]>(id && (base + '/cameras/' + id + '/tracks'), null, 'tracks-' + id)
 
 export const useEvents = () => useFetch<Event[]>(base + '/events', null, 'evts')

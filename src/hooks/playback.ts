@@ -1,13 +1,14 @@
 import { useMemo } from "react";
-import { PlayPoint, Track } from "src/types";
-import { trackAddDates } from "src/util/dates";
+import { PlayPoint } from "src/types";
+import { trackGroupAddDates } from "src/util/dates";
 import { useCameraTracks } from "./api";
 
-export const useTrackFromPlayPoint = (playPoint: PlayPoint): Track => {
+export const useTrackFromPlayPoint = (playPoint: PlayPoint): string => {
   const camTracks = useCameraTracks(playPoint?.camId)
-  const tracksWithDates = useMemo(() => camTracks?.map(trackAddDates) || [], [camTracks])
+  const tracksWithDates = useMemo(() => camTracks?.map(trackGroupAddDates) || [], [camTracks])
   const ts = playPoint?.ts
-  const track = ts && tracksWithDates
-    .find(t => t.start <= ts && t.start + t.length * 1000 >= ts)
-  return track
+  const group = ts && tracksWithDates
+    .find(t => t.start <= ts && t.end >= ts)
+  const track = group?.tracks.filter(t => t.start < ts).pop()
+  return track?.filename
 }
