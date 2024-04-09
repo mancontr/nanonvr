@@ -84,6 +84,7 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, isBig, active, ...other }: EventCardProps) => {
+  const [isVisible, setVisible] = useState(active)
   const ref = useRef<any>()
   const url = `${basename}/media/${event.uuid}/events/${event.filename}`
   const readableName = event.originalName.substring(event.originalName.lastIndexOf('/') + 1)
@@ -96,6 +97,20 @@ const EventCard = ({ event, isBig, active, ...other }: EventCardProps) => {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
     }
   }, [active])
+
+  useEffect(() => {
+    const opts = { rootMargin: "30px" }
+    const handler = entries => entries.forEach(entry => setVisible(entry.intersectionRatio > 0))
+    const observer = new IntersectionObserver(handler, opts)
+    observer.observe(ref.current)
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  if (!isVisible) {
+    return <div className={className} {...other} ref={ref} />
+  }
 
   return (
     <div className={className} {...other} ref={ref}>

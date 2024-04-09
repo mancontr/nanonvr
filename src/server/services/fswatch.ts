@@ -41,7 +41,6 @@ const handleUpdate = async (camId: string): Promise<void> => {
   const folder = path.join(base, camId, 'temp')
   if (!fs.existsSync(folder)) return
   const files = getFolderFiles(folder)
-  console.log('Files:', files)
 
   for (const file of files) {
     // Ignore files that might still be incomplete
