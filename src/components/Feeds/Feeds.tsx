@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import basename from 'src/util/basename'
 import { useTrackFromPlayPoint } from 'src/hooks/playback'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
@@ -8,8 +8,9 @@ import './Feeds.sass'
 const Feeds = () => {
   const {playPoint, setPlaybackTs} = usePlayPointState()
   const track: string = useTrackFromPlayPoint(playPoint)
+  const offset: number = useMemo(() => Math.floor((playPoint.ts - filename2localDate(track)) / 1000), [playPoint, track])
 
-  const url = track && `${basename}/media/${playPoint.camId}/${track}`
+  const url = track && `${basename}/media/${playPoint.camId}/${track}#t=${offset}`
 
   const handleTimeUpdate = (e) => {
     const clipStart = filename2localDate(track)
