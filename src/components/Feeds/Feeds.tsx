@@ -17,7 +17,7 @@ const Feeds = () => {
   return (
     <div id="feeds">
       {track &&
-        <video key={playPoint.camId + '/' + track} autoPlay onTimeUpdate={handleTimeUpdate} onEnded={handleEnded}>
+        <video key={url} autoPlay onTimeUpdate={handleTimeUpdate} onEnded={handleEnded}>
           <source src={url} />
         </video>
       }
