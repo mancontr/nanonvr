@@ -1,17 +1,18 @@
 import React from 'react'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { useWidth } from 'src/hooks/responsive'
-import { usePlayPoint } from 'src/routes/Home/PlayPointContext'
+import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import { getTimeMarksBetweenDates } from 'src/util/dates'
 import { useSlice } from './SliceContext'
 
 const TimelineScale = () => {
-  const playPoint = usePlayPoint()
+  const {playPoint, playbackTs} = usePlayPointState()
   const slice = useSlice()
   const length = slice[1] - slice[0]
   const pixels = useWidth() - 100
   const pph = pixels * 3600 * 1000 / length
   const resolution = blocksAtResolution.find(x => x.min < pph)
+  const ts = playbackTs || playPoint?.ts || null
 
   const dayLabels = getTimeMarksBetweenDates(slice, resolution.day)
   const timeLabels = getTimeMarksBetweenDates(slice, resolution.time)
@@ -46,10 +47,10 @@ const TimelineScale = () => {
           const style = { left: (b - slice[0]) * 100 / length + '%' }
           return <div key={b} className="scale-mark low" style={style} />
         })}
-        {playPoint && playPoint.ts &&
+        {ts &&
           <div
             className="needle"
-            style={{ left: (playPoint.ts - slice[0]) * 100 / length + '%' }}
+            style={{ left: (ts - slice[0]) * 100 / length + '%' }}
           />
         }
       </div>

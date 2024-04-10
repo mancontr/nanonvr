@@ -1,6 +1,6 @@
 import { TrackGroup } from 'src/types'
 
-const filename2localDate = (filename) => new Date(
+export const filename2localDate = (filename) => new Date(
   parseInt(filename.substring(0, 4)),
   parseInt(filename.substring(5, 7)) - 1,
   parseInt(filename.substring(8, 10)),

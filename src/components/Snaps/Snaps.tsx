@@ -6,7 +6,7 @@ import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import './Snaps.sass'
 
 const Snaps = (): JSX.Element => {
-  const [playPoint, setPlayPoint] = usePlayPointState()
+  const {playPoint, setPlayPoint} = usePlayPointState()
   const cams = useCameras()
 
   if (playPoint?.camId) {

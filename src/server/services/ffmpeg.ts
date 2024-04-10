@@ -110,6 +110,7 @@ export class Recorder {
       '-strftime', '1',
       '-segment_time', '60',
       '-segment_atclocktime', '1',
+      '-reset_timestamps', '1',
       '-metadata', 'title=' + this.title,
       path.join(this.folder, '%Y-%m-%d %H-%M-%S.mp4')
     ].filter(x => x)

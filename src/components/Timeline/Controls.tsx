@@ -5,7 +5,7 @@ import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
 import { useSliceState } from './SliceContext'
 
 const Controls = () => {
-  const [playPoint, setPlayPoint] = usePlayPointState()
+  const {playPoint, setPlayPoint} = usePlayPointState()
   const [slice, setSlice] = useSliceState()
   const track: string = useTrackFromPlayPoint(playPoint)
   const size = slice[1] - slice[0]
