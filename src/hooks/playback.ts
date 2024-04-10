@@ -3,12 +3,26 @@ import { PlayPoint } from "src/types";
 import { trackGroupAddDates } from "src/util/dates";
 import { useCameraTracks } from "./api";
 
-export const useTrackFromPlayPoint = (playPoint: PlayPoint): string => {
+interface TrackMeta {
+  track: string
+  start: number
+  nextTrack: string
+  nextStart: number
+}
+
+export const useTrackFromPlayPoint = (playPoint: PlayPoint): TrackMeta => {
   const camTracks = useCameraTracks(playPoint?.camId)
   const tracksWithDates = useMemo(() => camTracks?.map(trackGroupAddDates) || [], [camTracks])
   const ts = playPoint?.ts
-  const group = ts && tracksWithDates
-    .find(t => t.start <= ts && t.end >= ts)
-  const track = group?.tracks.filter(t => t.start < ts).pop()
-  return track?.filename
+  if (!ts) return null
+  const group = tracksWithDates.find(t => t.start <= ts && t.end >= ts)
+  const filteredGroup = group.tracks.filter(t => t.start <= ts)
+  const track = filteredGroup.pop()
+  const nextTrack = group.tracks[group.tracks.indexOf(track) + 1]
+  return {
+    track: track?.filename,
+    start: track?.start,
+    nextTrack: nextTrack?.filename,
+    nextStart: nextTrack?.start,
+  }
 }

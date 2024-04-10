@@ -7,7 +7,7 @@ import { useSliceState } from './SliceContext'
 const Controls = () => {
   const {playPoint, setPlayPoint} = usePlayPointState()
   const [slice, setSlice] = useSliceState()
-  const track: string = useTrackFromPlayPoint(playPoint)
+  const {track} = useTrackFromPlayPoint(playPoint) || {}
   const size = slice[1] - slice[0]
   const zoomIn = () => setSlice([slice[0] + size / 4, slice[1] - size / 4])
   const zoomOut = () => setSlice([slice[0] - size / 2, slice[1] + size / 2])
