@@ -47,8 +47,12 @@ const doCleanup = async (): Promise<void> => {
     const removeBytes = totalSize - maxSize
     const tracks = getUptoBytes(db.getOldestTracks(), removeBytes)
     for (const track of tracks) {
-      const file = path.join(config.folders.video, track.uuid, track.filename)
-      fs.unlinkSync(file)
+      const file = path.join(config.folders.video, track.uuid, track.filename.substring(0, 10), track.filename)
+      try {
+        fs.unlinkSync(file)
+      } catch (err) {
+        console.warn(err?.message || err)
+      }
     }
   }
 }
