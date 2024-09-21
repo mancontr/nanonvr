@@ -103,7 +103,7 @@ export class Recorder {
       isRtsp && '-rtsp_transport', isRtsp && 'tcp',
       '-i', this.url,
       '-use_wallclock_as_timestamps', '1',
-      '-an',
+      '-acodec', 'copy',
       '-vcodec', 'copy',
       '-f', 'segment',
       '-segment_format_options', 'movflags=+faststart',

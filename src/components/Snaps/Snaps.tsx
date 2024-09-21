@@ -7,7 +7,7 @@ import './Snaps.sass'
 
 const Snaps = (): JSX.Element => {
   const {playPoint, setPlayPoint} = usePlayPointState()
-  const cams = useCameras()
+  const cams = useCameras().slice()
 
   if (playPoint?.camId) {
     const cam = cams.find(c => c.uuid === playPoint.camId)
@@ -18,12 +18,25 @@ const Snaps = (): JSX.Element => {
     )
   }
 
-  const layout = getLayout(cams.length)
+  const rowCount = Math.floor(Math.sqrt(cams.length))
+  const perRow = Math.ceil(cams.length / rowCount)
+
+  const emptySpaces = rowCount * perRow - cams.length
+  for (let i = 0; i < emptySpaces; i++) cams.unshift(null)
+
+  const rows = []
+  for (let i = 0; i < rowCount; i++) {
+    rows[i] = cams.slice(i * perRow, (i + 1) * perRow)
+  }
 
   return (
-    <div id="snaps" className={layout}>
-      {cams.map(cam =>
-        <Snap key={cam.uuid} cam={cam} onClick={() => setPlayPoint({ camId: cam.uuid })}/>
+    <div id="snaps">
+      {rows.map(row =>
+        <div className="row">
+          {row.map(cam => cam &&
+            <Snap key={cam.uuid} cam={cam} onClick={() => setPlayPoint({ camId: cam.uuid })}/>
+          )}
+        </div>
       )}
     </div>
   )
@@ -53,13 +66,6 @@ const Snap = ({ cam, ...other }) => {
   return (
     <canvas className="snap" ref={canvasRef} {...other} />
   )
-}
-
-const getLayout = (len: number): string => {
-  if (len === 1) return 'one'
-  if (len <= 4) return 'four'
-  if (len <= 9) return 'nine'
-  return 'sixteen'
 }
 
 const SnapsWrapper = () =>
