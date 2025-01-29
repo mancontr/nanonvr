@@ -4,16 +4,12 @@
   "private": true,
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "better-sqlite3": "^11.8.1",
-    "mime": "1.6.0"
+    "better-sqlite3": "^11.8.1"
   },
   "devDependencies": {
-    "@gluedigital/ruse-fetch-extras": "^1.2.7",
-    "@types/jest": "^28.1.6",
-    "@types/koa-router": "^7.4.4",
-    "@types/sqlite3": "^3.1.8",
-    "@types/uuid": "^8.3.4",
-    "chokidar": "^3.5.3",
+    "@gluedigital/ruse-fetch-extras": "^1.2.10",
+    "chokidar": "^4.0.3",
+    "mime": "1.6.0",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -22,8 +18,8 @@
     "react-router": "7.0.2",
     "react-router-dom": "7.0.2",
     "universal-scripts": "3.1.0",
-    "uuid": "^8.3.2",
-    "yaml": "^2.1.3"
+    "uuid": "^11.0.5",
+    "yaml": "^2.7.0"
   },
   "scripts": {
     "start": "universal-scripts start",
