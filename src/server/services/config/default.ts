@@ -5,7 +5,7 @@ const defaultConfig: Config = {
 
   folders: {
     config: process.env.CONFIG_DIR || '/config',
-    video: process.env.DATA_DIR || '/share',
+    video: process.env.DATA_DIR || '/media',
   },
 
   ftp: {
