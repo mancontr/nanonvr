@@ -35,13 +35,13 @@ export const startup = async () => {
  *   - On build mode, send a static index and stop the middleware chain
  *   - On watch mode, set the basename and let others continue
  */
-export const serverMiddleware = (ctx, next) => {
+export const serverMiddleware = (req, res, next) => {
   if (index) {
-    ctx.type = 'text/html'
-    ctx.body = index
+    res.type('text/html')
+    res.send(index)
     return
   } else {
-    if (hassInfo) ctx.basename = hassInfo.ingress_url
+    if (hassInfo) req.basename = hassInfo.ingress_url
     return next()
   }
 }

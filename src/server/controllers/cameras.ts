@@ -1,66 +1,72 @@
-import Router from 'koa-router'
+import { RequestHandler } from 'express'
+import { Readable } from 'stream'
 import { getConfig } from '../services/config'
 import * as cameras from '../services/cameras'
 import { Recorder } from '../services/ffmpeg'
 
-export const getCameras: Router.IMiddleware = (ctx) => {
+export const getCameras: RequestHandler = (_, res) => {
   const cams = getConfig().cameras
-  ctx.body = cams
+  res.send(cams)
 }
 
-export const getCamera: Router.IMiddleware = (ctx) => {
-  const cam = getConfig().cameras.find(cam => cam.uuid === ctx.params.id)
-  ctx.body = cam
+export const getCamera: RequestHandler = (req, res) => {
+  const cam = getConfig().cameras.find(cam => cam.uuid === req.params.id)
+  res.send(cam)
 }
 
-export const getCameraStatus: Router.IMiddleware = (ctx) => {
-  const rec = Recorder.get(ctx.params.id)
+export const getCameraStatus: RequestHandler = (req, res) => {
+  const rec = Recorder.get(req.params.id)
   if (rec) {
-    ctx.body = {
+    res.send({
       status: rec.getStatus(),
       logs: rec.getLogs(),
-    }
+    })
   } else {
-    ctx.body = {
+    res.send({
       status: 'UNKNOWN',
       logs: []
-    }
+    })
   }
 }
 
-export const recordStart: Router.IMiddleware = (ctx) => {
-  const rec = Recorder.get(ctx.params.id)
+export const recordStart: RequestHandler = (req, res) => {
+  const rec = Recorder.get(req.params.id)
   rec.start()
-  ctx.body = {}
+  res.send({})
 }
 
-export const recordStop: Router.IMiddleware = (ctx) => {
-  const rec = Recorder.get(ctx.params.id)
+export const recordStop: RequestHandler = (req, res) => {
+  const rec = Recorder.get(req.params.id)
   rec.stop()
-  ctx.body = {}
+  res.send({})
 }
 
-export const getThumb: Router.IMiddleware = async (ctx) => {
-  const cam = getConfig().cameras.find(cam => cam.uuid === ctx.params.id)
-  if (!cam.snapshot) ctx.throw(404, 'Not Found')
-  const res = await fetch(cam.snapshot)
-  ctx.type = res.headers.get('Content-Type') || 'image/jpeg'
-  ctx.body = res.body
+export const getThumb: RequestHandler = async (req, res) => {
+  const cam = getConfig().cameras.find(cam => cam.uuid === req.params.id)
+  if (!cam.snapshot) res.status(404).send({ error: 'Not Found' })
+
+  const { username, password, origin, pathname, search } = new URL(cam.snapshot)
+  const credentials = btoa(`${username}:${password}`)
+  const url = origin + pathname + search
+
+  const fres = await fetch(url, { headers: { 'Authorization': `Basic ${credentials}`}})
+  res.type(fres.headers.get('Content-Type') || 'image/jpeg')
+  Readable.fromWeb(fres.body as any).pipe(res)
 }
 
-export const addCamera: Router.IMiddleware = (ctx) => {
-  const cam = cameras.addCamera(ctx.request.body)
-  ctx.body = cam
+export const addCamera: RequestHandler = (req, res) => {
+  const cam = cameras.addCamera(req.body)
+  res.send(cam)
 }
 
-export const updateCamera: Router.IMiddleware = (ctx) => {
-  const id = ctx.params.id
-  const cam = cameras.updateCamera(id, ctx.request.body)
-  ctx.body = cam
+export const updateCamera: RequestHandler = (req, res) => {
+  const id = req.params.id
+  const cam = cameras.updateCamera(id, req.body)
+  res.send(cam)
 }
 
-export const removeCamera: Router.IMiddleware = (ctx) => {
-  const id = ctx.params.id
+export const removeCamera: RequestHandler = (req, res) => {
+  const id = req.params.id
   cameras.removeCamera(id)
-  ctx.body = { success: true }
+  res.send({ success: true })
 }

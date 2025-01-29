@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import basename from 'src/util/basename'
 import { useEvents } from 'src/hooks/api'
 import { Event } from 'src/types'
@@ -8,7 +8,7 @@ import './Events.sass'
 
 const Events = () => {
   const events = useEvents()
-  const history = useHistory()
+  const navigate = useNavigate()
   const [current, setCurrent] = useState(0)
   const currEvent = events[current]
 
@@ -36,7 +36,7 @@ const Events = () => {
       [f.substring(9, 11), f.substring(11, 13), f.substring(13, 15)].join(':') +
       'Z'
     )
-    setTimeout(() => history.push('/', { camId: currEvent.uuid, ts: ts.valueOf() }), 0)
+    setTimeout(() => navigate('/', { state: { camId: currEvent.uuid, ts: ts.valueOf() }}), 0)
   }
   const download = () => {
     const url = `${basename}/media/${currEvent.uuid}/events/${currEvent.filename}`

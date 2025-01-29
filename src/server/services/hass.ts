@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 const token: string = process.env.SUPERVISOR_TOKEN
 
 export const apiCall = async (route: string) => {
