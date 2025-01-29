@@ -43,7 +43,7 @@ const Snaps = (): JSX.Element => {
 }
 
 const Snap = ({ cam, ...other }) => {
-  const canvasRef = useRef<any>()
+  const canvasRef = useRef<any>(null)
 
   useEffect(() => {
     let t = null

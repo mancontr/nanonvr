@@ -1,6 +1,6 @@
 import React, { Suspense, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { useHistory, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Loading from 'src/components/Loading/Loading'
 import { useCamera, useCameraCRUD } from 'src/hooks/api'
 import { Camera } from 'src/types'
@@ -17,7 +17,7 @@ const emptyCam: Camera = {
 }
 
 const CamEdit = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { id } = useParams()
   const initialCam = useCamera(id)
   const [cam, setCam] = useState(initialCam || emptyCam)
@@ -31,13 +31,13 @@ const CamEdit = () => {
     } else {
       await cameraCrud.create(cam)
     }
-    history.push('/config')
+    navigate('/config')
   }
 
   const handleRemove = async () => {
     if (confirm('Are you sure?')) {
       await cameraCrud.delete(id)
-      history.push('/config')
+      navigate('/config')
     }
   }
 

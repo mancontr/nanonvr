@@ -1,9 +1,9 @@
-import Router from 'koa-router'
+import { RequestHandler } from 'express'
 import compactTracks from 'src/util/compactTracks'
 import db from '../services/db'
 
-export const getTracks: Router.IMiddleware = (ctx) => {
-  const cam = ctx.params.id
+export const getTracks: RequestHandler = (req, res) => {
+  const cam = req.params.id
   const tracks = db.getTracks(cam)
-  ctx.body = compactTracks(tracks)
+  res.send(compactTracks(tracks))
 }
