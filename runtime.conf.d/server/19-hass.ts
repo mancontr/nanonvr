@@ -52,7 +52,8 @@ const genIndex = () => {
   const chunks = JSON.parse(fs.readFileSync(chunkspath).toString()).entrypoints
   const styles = []
   const scripts = []
-  for (const asset of chunks) {
+  for (const chunk of chunks) {
+    const asset = chunk.name
     if (asset.endsWith('.js') && asset !== 'polyfills.js') {
       scripts.push(`<script src="${basename + asset}"></script>`)
     } else if (asset.endsWith('.css')) {
