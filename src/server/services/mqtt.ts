@@ -15,13 +15,20 @@ const initialize = async () => {
     return
   }
   try {
-    client = await mqtt.connectAsync(url)
+    client = mqtt.connect(url)
   } catch (e) {
     console.error('[MQTT] Cannot connect to server:', e)
     return
   }
-  await syncCameras()
-  await resetCameras()
+  client.on('connect', async () => {
+    console.log('[MQTT] Connected to server.')
+    try {
+      await syncCameras()
+      await resetCameras()
+    } catch (e) {
+      console.error('[MQTT] Error syncing initial state:', e.message)
+    }
+  })
 }
 
 export const syncCameras = async () => {
