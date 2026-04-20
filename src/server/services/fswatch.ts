@@ -4,6 +4,7 @@ import db from 'src/server/services/db'
 import getMp4Length from 'src/util/getMp4Length'
 import bus from './bus'
 import { getConfig } from './config'
+import { sendRecording } from './mqtt'
 
 const start = () => {
   // The worker will be watching forever the data dir
@@ -60,6 +61,7 @@ const handleUpdate = async (camId: string): Promise<void> => {
       uuid: camId,
       length: await getMp4Length(file.filepath)
     })
+    sendRecording(camId)
   }
 
   // Also check if some old ones need to be deleted
