@@ -14,6 +14,7 @@ const start = () => {
     while(true) {
       try {
         await doCleanup()
+        await cleanupOldEvents()
       } catch (e) {
         console.error(e)
       }
@@ -58,6 +59,31 @@ const doCleanup = async (): Promise<void> => {
         console.warn(err?.message || err)
       }
     }
+  }
+}
+
+/**
+ * Removes events older than the configured retention period
+ */
+const cleanupOldEvents = async (): Promise<void> => {
+  const config = getConfig()
+  const retentionDays = config.storage.eventRetentionDays || 30
+  if (retentionDays <= 0) return
+  const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000)
+  // Same format as event filenames produced in ftp.ts: "YYYYMMDD HHMMSS mmm"
+  const cutoffName = cutoff.toISOString()
+    .replace(/[T.]/g, ' ')
+    .replace(/[Z:\-]/g, '')
+
+  const events = db.getOldEvents(cutoffName)
+  for (const event of events) {
+    const file = path.join(config.folders.video, event.uuid, 'events', event.filename)
+    try {
+      fs.unlinkSync(file)
+    } catch (err) {
+      if (err?.code !== 'ENOENT') console.warn(err?.message || err)
+    }
+    db.removeEvent(event.uuid, event.filename)
   }
 }
 

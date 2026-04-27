@@ -96,6 +96,12 @@ export class Database {
       .all()
   }
 
+  getOldEvents(beforeFilename: string): Event[] {
+    return this.db
+      .prepare('SELECT * FROM event WHERE filename < ?')
+      .all([beforeFilename])
+  }
+
 }
 
 const db = new Database()

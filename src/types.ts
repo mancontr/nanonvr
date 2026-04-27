@@ -44,6 +44,7 @@ export interface FoldersConfig {
 
 export interface StorageConfig {
   maxPercent?: number
+  eventRetentionDays?: number
 }
 
 export interface FtpConfig {

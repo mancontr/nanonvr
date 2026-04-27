@@ -15,7 +15,8 @@ const defaultConfig: Config = {
   },
 
   storage: {
-    maxPercent: 85
+    maxPercent: 85,
+    eventRetentionDays: 30,
   }
 }
 
