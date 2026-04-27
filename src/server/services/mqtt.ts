@@ -7,14 +7,8 @@ import pkg from '../../../package.json'
 let client = null
 
 const initialize = async () => {
-  let url: string
-  try {
-    const data = await getMqttInfo()
-    url = `mqtt://${data.username}:${data.password}@${data.host}:${data.port}`
-  } catch (e) {
-    // Ignore silently (not on HASS?)
-    return
-  }
+  const url = await getMqttUrl()
+  if (!url) return
   try {
     client = mqtt.connect(url)
   } catch (e) {
@@ -185,6 +179,41 @@ export const sendEvent = async (camId: string) => {
 export const sendRecording = async (camId: string) => {
   if (!client) return
   updateStatus(camId, 'recording', recordingDuration)
+}
+
+// Sources for the MQTT broker URL; first to return an URL is used
+const urlSources: { name: string, get: () => Promise<string | null> }[] = [
+  {
+    name: 'config',
+    get: async () => getConfig().mqtt?.url || null,
+  },
+  {
+    name: 'env',
+    get: async () => process.env.MQTT_URL || null,
+  },
+  {
+    name: 'home-assistant',
+    get: async () => {
+      if (!process.env.SUPERVISOR_TOKEN) return null
+      const data = await getMqttInfo()
+      return `mqtt://${data.username}:${data.password}@${data.host}:${data.port}`
+    },
+  },
+]
+
+const getMqttUrl = async (): Promise<string | null> => {
+  for (const { name, get } of urlSources) {
+    try {
+      const url = await get()
+      if (url) {
+        console.log(`[MQTT] Using broker config from ${name}.`)
+        return url
+      }
+    } catch (e) {
+      console.warn(`[MQTT] Source "${name}" failed:`, e.message)
+    }
+  }
+  return null
 }
 
 bus.once('configLoaded', initialize)

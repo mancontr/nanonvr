@@ -52,9 +52,14 @@ export interface FtpConfig {
   dataPort: number
 }
 
+export interface MqttConfig {
+  url?: string
+}
+
 export interface Config {
   cameras?: Camera[]
   folders?: FoldersConfig
   ftp?: FtpConfig
+  mqtt?: MqttConfig
   storage?: StorageConfig
 }
