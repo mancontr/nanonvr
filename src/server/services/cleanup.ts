@@ -47,9 +47,13 @@ const doCleanup = async (): Promise<void> => {
     const removeBytes = totalSize - maxSize
     const tracks = getUptoBytes(db.getOldestTracks(), removeBytes)
     for (const track of tracks) {
-      const file = path.join(config.folders.video, track.uuid, track.filename.substring(0, 10), track.filename)
+      const dayDir = path.join(config.folders.video, track.uuid, track.filename.substring(0, 10))
+      const file = path.join(dayDir, track.filename)
       try {
         fs.unlinkSync(file)
+        if (fs.readdirSync(dayDir).length === 0) {
+          fs.rmdirSync(dayDir)
+        }
       } catch (err) {
         console.warn(err?.message || err)
       }
