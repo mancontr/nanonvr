@@ -1,0 +1,80 @@
+.modal-backdrop
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  background-color: rgba(0, 0, 0, 0.6)
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 20px
+  z-index: 1000
+
+.modal
+  background-color: #202534
+  border: 1px solid #5a5f68
+  padding: 20px
+  width: 360px
+  max-width: 100%
+  box-sizing: border-box
+
+  .modal-header
+    display: flex
+    align-items: center
+    justify-content: space-between
+    margin-bottom: 10px
+
+    h2
+      margin: 0
+      font-size: 100%
+
+    .icon-cross
+      cursor: pointer
+      padding: 4px
+
+  label
+    display: flex
+    flex-direction: column
+    margin-bottom: 12px
+
+    span
+      margin-bottom: 4px
+
+    input
+      background-color: #444
+      color: white
+      border: 0
+      padding: 6px
+      font-family: inherit
+      font-size: 100%
+      width: 100%
+      box-sizing: border-box
+
+      &:focus
+        outline: 1px solid #88f
+
+  .buttons
+    display: flex
+    gap: 10px
+    margin-top: 20px
+
+  button
+    background-color: #666
+    border: 1px solid #888
+    color: inherit
+    cursor: pointer
+    height: 30px
+    flex: 1 1 auto
+
+    &:focus
+      outline: 1px solid #88f
+
+    &:disabled
+      cursor: not-allowed
+      background-color: #1b1c1c
+      color: #777
+
+@media (max-width: 640px)
+  .modal
+    width: 100%
