@@ -46,12 +46,12 @@ function compactTracks(tracks: Track[]): TrackGroup[] {
   }))
 }
 
-function filename2date(filename: string): number {
+export function filename2date(filename: string): number {
   const str = filename.substring(0, 10) + 'T' + filename.substring(11, 19).replace(/-/g, ':') + 'Z'
   return new Date(str).valueOf()
 }
 
-function date2filename(date: number): string {
+export function date2filename(date: number): string {
   const str = new Date(date).toISOString()
   return str.substring(0, 10) + ' ' + str.substring(11, 19).replace(/:/g, '-')
 }

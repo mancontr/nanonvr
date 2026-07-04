@@ -36,6 +36,12 @@ export class Database {
       .all([camId])
   }
 
+  getTracksInRange(camId: string, fromFilename: string, toFilename: string): Track[] {
+    return this.db
+      .prepare('SELECT * FROM track WHERE uuid = ? AND filename >= ? AND filename <= ? ORDER BY filename ASC')
+      .all([camId, fromFilename, toFilename])
+  }
+
   getTrack(camId: string, filename: string): Track {
     return this.db
       .prepare('SELECT * FROM track WHERE uuid = ? AND filename = ?')

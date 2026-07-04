@@ -20,6 +20,7 @@ router.get('/api/cameras/:id/tracks', tracks.getTracks)
 
 router.get('/api/events', events.getEvents)
 
+router.get('/media/:camId/download', media.serveDownload)
 router.get('/media/:camId/:track', media.serveTrack)
 router.get('/media/:camId/events/:event', media.serveEvent)
 

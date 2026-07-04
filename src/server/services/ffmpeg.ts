@@ -138,6 +138,36 @@ const sync = async () => {
   }
 }
 
+export interface ConcatEntry {
+  path: string
+  inpoint?: number
+  outpoint?: number
+}
+
+export const streamRange = (files: ConcatEntry[]): ChildProcess => {
+  const list = files.map(f => {
+    let entry = `file 'file:${f.path.replace(/'/g, "'\\''")}'`
+    if (f.inpoint != null) entry += `\ninpoint ${f.inpoint}`
+    if (f.outpoint != null) entry += `\noutpoint ${f.outpoint}`
+    return entry
+  }).join('\n')
+
+  const proc = spawn('ffmpeg', [
+    '-hide_banner',
+    '-loglevel', 'warning',
+    '-f', 'concat',
+    '-safe', '0',
+    '-protocol_whitelist', 'file,pipe,crypto,data',
+    '-i', 'pipe:0',
+    '-c', 'copy',
+    '-movflags', 'frag_keyframe+empty_moov+default_base_moof',
+    '-f', 'mp4',
+    'pipe:1'
+  ])
+  proc.stdin.end(list)
+  return proc
+}
+
 export const getVideoLength = async (file: string): Promise<number> => {
   const cmd = `ffprobe -show_entries format=duration -v quiet -of csv="p=0" "${file}"`
   const out: string = await new Promise((resolve, reject) =>
