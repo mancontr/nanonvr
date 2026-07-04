@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
 import { exec } from 'child_process'
 import db from 'src/server/services/db'
@@ -51,9 +51,9 @@ const doCleanup = async (): Promise<void> => {
       const dayDir = path.join(config.folders.video, track.uuid, track.filename.substring(0, 10))
       const file = path.join(dayDir, track.filename)
       try {
-        fs.unlinkSync(file)
-        if (fs.readdirSync(dayDir).length === 0) {
-          fs.rmdirSync(dayDir)
+        await fs.unlink(file)
+        if ((await fs.readdir(dayDir)).length === 0) {
+          await fs.rmdir(dayDir)
         }
       } catch (err) {
         console.warn(err?.message || err)
@@ -79,7 +79,7 @@ const cleanupOldEvents = async (): Promise<void> => {
   for (const event of events) {
     const file = path.join(config.folders.video, event.uuid, 'events', event.filename)
     try {
-      fs.unlinkSync(file)
+      await fs.unlink(file)
     } catch (err) {
       if (err?.code !== 'ENOENT') console.warn(err?.message || err)
     }
