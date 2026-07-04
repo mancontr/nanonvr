@@ -1,10 +1,11 @@
 import { RequestHandler } from 'express'
 import path from 'path'
 import fs from 'fs'
+import { randomUUID } from 'crypto'
 import { getConfig } from '../services/config'
 import { filename2date, date2filename } from 'src/util/compactTracks'
 import db from '../services/db'
-import { streamRange } from '../services/ffmpeg'
+import { generateRange } from '../services/ffmpeg'
 
 export const serveTrack: RequestHandler = async (req, res) => {
   const { camId, track } = req.params
@@ -25,7 +26,8 @@ export const serveDownload: RequestHandler = async (req, res) => {
   const start = Number(req.query.start)
   const end = Number(req.query.end)
 
-  if (!getConfig().cameras.some(cam => cam.uuid === camId)) {
+  const cam = getConfig().cameras.find(cam => cam.uuid === camId)
+  if (!cam) {
     res.status(404).send({ error: 'Camera not found' })
     return
   }
@@ -67,16 +69,30 @@ export const serveDownload: RequestHandler = async (req, res) => {
     outpoint: i === entries.length - 1 && trackEnd > end ? (end - trackStart) / 1000 : undefined,
   }))
 
-  const filename = `${camId}_${date2filename(start)}_${date2filename(end)}.mp4`.replace(/[: ]/g, '-')
-  res.setHeader('Content-Type', 'video/mp4')
-  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+  const tmpDir = path.join(videoFolder, 'tmp')
+  fs.mkdirSync(tmpDir, { recursive: true })
+  const tmpPath = path.join(tmpDir, `download-${randomUUID()}.mp4`)
 
-  const proc = streamRange(files)
-  proc.stderr.on('data', msg => console.warn(`[download] ffmpeg: ${msg.toString()}`))
-  proc.on('error', err => {
-    console.error('[download] ffmpeg process error', err)
-    if (!res.headersSent) res.status(500).end()
+  const controller = new AbortController()
+  req.on('close', () => controller.abort())
+
+  let generated = false
+  try {
+    await generateRange(files, tmpPath, { title: cam.name, creationTime: new Date(start).toISOString() }, controller.signal)
+    generated = true
+  } catch (err) {
+    console.error('[download] ffmpeg failed to generate range', err)
+  }
+
+  if (!generated) {
+    fs.unlink(tmpPath, () => {})
+    if (!res.headersSent) res.status(500).send({ error: 'Failed to generate video' })
+    return
+  }
+
+  const filename = `${cam.name} ${date2filename(start)}.mp4`
+  res.download(tmpPath, filename, err => {
+    if (err) console.error('[download] Error sending file', err)
+    fs.unlink(tmpPath, () => {})
   })
-  req.on('close', () => proc.kill())
-  proc.stdout.pipe(res)
 }

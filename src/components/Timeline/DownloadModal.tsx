@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import basename from 'src/util/basename'
 import './DownloadModal.sass'
 
-const DEFAULT_LEAD_MS = 5 * 60 * 1000
+const DEFAULT_WINDOW_MS = 5 * 60 * 1000
 
 const toLocalInput = (ts: number) => {
   const d = new Date(ts)
@@ -20,8 +20,9 @@ interface DownloadModalProps {
 }
 
 const DownloadModal = ({ camId, anchorTs, onClose }: DownloadModalProps) => {
-  const [start, setStart] = useState(() => toLocalInput(anchorTs - DEFAULT_LEAD_MS))
-  const [end, setEnd] = useState(() => toLocalInput(anchorTs))
+  const defaultStart = Math.floor(anchorTs / 60000) * 60000
+  const [start, setStart] = useState(() => toLocalInput(defaultStart))
+  const [end, setEnd] = useState(() => toLocalInput(defaultStart + DEFAULT_WINDOW_MS))
 
   useEffect(() => {
     const handler = e => e.key === 'Escape' && onClose()

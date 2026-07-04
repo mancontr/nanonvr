@@ -144,7 +144,12 @@ export interface ConcatEntry {
   outpoint?: number
 }
 
-export const streamRange = (files: ConcatEntry[]): ChildProcess => {
+export interface RangeMetadata {
+  title?: string
+  creationTime?: string
+}
+
+export const generateRange = (files: ConcatEntry[], outputPath: string, metadata: RangeMetadata = {}, signal?: AbortSignal): Promise<void> => {
   const list = files.map(f => {
     let entry = `file 'file:${f.path.replace(/'/g, "'\\''")}'`
     if (f.inpoint != null) entry += `\ninpoint ${f.inpoint}`
@@ -152,20 +157,30 @@ export const streamRange = (files: ConcatEntry[]): ChildProcess => {
     return entry
   }).join('\n')
 
-  const proc = spawn('ffmpeg', [
-    '-hide_banner',
-    '-loglevel', 'warning',
-    '-f', 'concat',
-    '-safe', '0',
-    '-protocol_whitelist', 'file,pipe,crypto,data',
-    '-i', 'pipe:0',
-    '-c', 'copy',
-    '-movflags', 'frag_keyframe+empty_moov+default_base_moof',
-    '-f', 'mp4',
-    'pipe:1'
-  ])
-  proc.stdin.end(list)
-  return proc
+  const metadataArgs = []
+  if (metadata.title) metadataArgs.push('-metadata', `title=${metadata.title}`)
+  if (metadata.creationTime) metadataArgs.push('-metadata', `creation_time=${metadata.creationTime}`)
+
+  return new Promise((resolve, reject) => {
+    const proc = spawn('ffmpeg', [
+      '-hide_banner',
+      '-loglevel', 'warning',
+      '-f', 'concat',
+      '-safe', '0',
+      '-protocol_whitelist', 'file,pipe,crypto,data',
+      '-i', 'pipe:0',
+      '-c', 'copy',
+      ...metadataArgs,
+      '-movflags', '+faststart',
+      '-f', 'mp4',
+      outputPath
+    ], { signal })
+    let stderr = ''
+    proc.stderr.on('data', msg => { stderr += msg.toString() })
+    proc.on('error', reject)
+    proc.on('close', code => code === 0 ? resolve() : reject(new Error(`ffmpeg exited with code ${code}: ${stderr}`)))
+    proc.stdin.end(list)
+  })
 }
 
 export const getVideoLength = async (file: string): Promise<number> => {
