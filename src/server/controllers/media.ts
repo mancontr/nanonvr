@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto'
 import { getConfig } from '../services/config'
 import { filename2date, date2filename } from 'src/util/compactTracks'
 import db from '../services/db'
-import { generateRange } from '../services/ffmpeg'
+import { startDownloadJob, getDownloadJob, consumeDownloadJob } from '../services/downloadJobs'
 
 export const serveTrack: RequestHandler = async (req, res) => {
   const { camId, track } = req.params
@@ -21,7 +21,7 @@ export const serveEvent: RequestHandler = async (req, res) => {
   res.sendFile(filePath)
 }
 
-export const serveDownload: RequestHandler = async (req, res) => {
+export const startDownload: RequestHandler = async (req, res) => {
   const { camId } = req.params
   const start = Number(req.query.start)
   const end = Number(req.query.end)
@@ -72,27 +72,30 @@ export const serveDownload: RequestHandler = async (req, res) => {
   const tmpDir = path.join(videoFolder, 'tmp')
   fs.mkdirSync(tmpDir, { recursive: true })
   const tmpPath = path.join(tmpDir, `download-${randomUUID()}.mp4`)
+  const filename = `${cam.name} ${date2filename(start)}.mp4`
 
-  const controller = new AbortController()
-  req.on('close', () => controller.abort())
+  const id = startDownloadJob(files, tmpPath, filename, { title: cam.name, creationTime: new Date(start).toISOString() })
+  res.send({ id })
+}
 
-  let generated = false
-  try {
-    await generateRange(files, tmpPath, { title: cam.name, creationTime: new Date(start).toISOString() }, controller.signal)
-    generated = true
-  } catch (err) {
-    console.error('[download] ffmpeg failed to generate range', err)
-  }
-
-  if (!generated) {
-    fs.unlink(tmpPath, () => {})
-    if (!res.headersSent) res.status(500).send({ error: 'Failed to generate video' })
+export const getDownloadStatus: RequestHandler = (req, res) => {
+  const job = getDownloadJob(req.params.id)
+  if (!job) {
+    res.status(404).send({ error: 'Not found' })
     return
   }
+  res.send({ status: job.status, error: job.error })
+}
 
-  const filename = `${cam.name} ${date2filename(start)}.mp4`
-  res.download(tmpPath, filename, err => {
+export const serveDownloadFile: RequestHandler = (req, res) => {
+  const job = getDownloadJob(req.params.id)
+  if (!job || job.status !== 'done') {
+    res.status(404).send({ error: 'Not ready' })
+    return
+  }
+  consumeDownloadJob(req.params.id)
+  res.download(job.filePath, job.filename, err => {
     if (err) console.error('[download] Error sending file', err)
-    fs.unlink(tmpPath, () => {})
+    fs.unlink(job.filePath, () => {})
   })
 }
