@@ -47,13 +47,20 @@ function compactTracks(tracks: Track[]): TrackGroup[] {
 }
 
 export function filename2date(filename: string): number {
-  const str = filename.substring(0, 10) + 'T' + filename.substring(11, 19).replace(/-/g, ':') + 'Z'
-  return new Date(str).valueOf()
+  return new Date(
+    +filename.substring(0, 4),
+    +filename.substring(5, 7) - 1,
+    +filename.substring(8, 10),
+    +filename.substring(11, 13),
+    +filename.substring(14, 16),
+    +filename.substring(17, 19),
+  ).valueOf()
 }
 
 export function date2filename(date: number): string {
-  const str = new Date(date).toISOString()
-  return str.substring(0, 10) + ' ' + str.substring(11, 19).replace(/:/g, '-')
+  const d = new Date(date)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`
 }
 
 export default compactTracks

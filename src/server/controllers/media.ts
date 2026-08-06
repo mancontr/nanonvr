@@ -21,16 +21,24 @@ export const serveEvent: RequestHandler = async (req, res) => {
   res.sendFile(filePath)
 }
 
+const FILENAME_DATE_RE = /^\d{4}-\d{2}-\d{2} \d{2}-\d{2}-\d{2}$/
+
 export const startDownload: RequestHandler = async (req, res) => {
   const { camId } = req.params
-  const start = Number(req.query.start)
-  const end = Number(req.query.end)
+  const startStr = String(req.query.start)
+  const endStr = String(req.query.end)
 
   const cam = getConfig().cameras.find(cam => cam.uuid === camId)
   if (!cam) {
     res.status(404).send({ error: 'Camera not found' })
     return
   }
+  if (!FILENAME_DATE_RE.test(startStr) || !FILENAME_DATE_RE.test(endStr)) {
+    res.status(400).send({ error: 'Invalid start/end' })
+    return
+  }
+  const start = filename2date(startStr)
+  const end = filename2date(endStr)
   if (!Number.isFinite(start) || !Number.isFinite(end) || start >= end) {
     res.status(400).send({ error: 'Invalid start/end' })
     return
@@ -94,6 +102,7 @@ export const serveDownloadFile: RequestHandler = (req, res) => {
     return
   }
   consumeDownloadJob(req.params.id)
+  res.setHeader('Cache-Control', 'no-transform')
   res.download(job.filePath, job.filename, err => {
     if (err) console.error('[download] Error sending file', err)
     fs.unlink(job.filePath, () => {})

@@ -13,7 +13,7 @@ const toLocalInput = (ts: number) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-const fromLocalInput = (value: string) => value ? new Date(value).getTime() : NaN
+const toFilenameDate = (value: string) => value.replace('T', ' ').replace(':', '-') + '-00'
 
 interface DownloadModalProps {
   camId: string
@@ -36,9 +36,7 @@ const DownloadModal = ({ camId, anchorTs, onClose }: DownloadModalProps) => {
 
   useEffect(() => () => clearInterval(pollRef.current), [])
 
-  const startMs = fromLocalInput(start)
-  const endMs = fromLocalInput(end)
-  const valid = Number.isFinite(startMs) && Number.isFinite(endMs) && startMs < endMs
+  const valid = !!start && !!end && start < end
 
   const poll = (id: string) => {
     pollRef.current = setInterval(async () => {
@@ -68,7 +66,8 @@ const DownloadModal = ({ camId, anchorTs, onClose }: DownloadModalProps) => {
     if (!valid) return
     setStage('generating')
     try {
-      const res = await fetch(`${basename}/media/${camId}/download?start=${startMs}&end=${endMs}`, { method: 'POST' })
+      const params = new URLSearchParams({ start: toFilenameDate(start), end: toFilenameDate(end) })
+      const res = await fetch(`${basename}/media/${camId}/download?${params}`, { method: 'POST' })
       if (!res.ok) throw new Error('Failed to start download')
       const { id } = await res.json()
       poll(id)
