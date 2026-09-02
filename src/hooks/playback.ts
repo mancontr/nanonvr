@@ -16,6 +16,7 @@ export const useTrackFromPlayPoint = (playPoint: PlayPoint): TrackMeta => {
   const ts = playPoint?.ts
   if (!ts) return null
   const group = tracksWithDates.find(t => t.start <= ts && t.end >= ts)
+  if (!group) return null
   const filteredGroup = group.tracks.filter(t => t.start <= ts)
   const track = filteredGroup.pop()
   const nextTrack = group.tracks[group.tracks.indexOf(track) + 1]

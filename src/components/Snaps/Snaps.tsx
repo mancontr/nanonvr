@@ -61,7 +61,7 @@ const Snap = ({ cam, ...other }) => {
     }
     update()
     return () => clearInterval(t)
-  }, [])
+  }, [cam?.uuid])
 
   return (
     <canvas className="snap" ref={canvasRef} {...other} />

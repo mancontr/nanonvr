@@ -6,13 +6,15 @@ import CameraRecords from './CameraRecords'
 import { useSlice } from './SliceContext'
 import './Timeline.sass'
 import useTimelineEvents from './useTimelineEvents'
+import useTimelineHotkeys from './useTimelineHotkeys'
 
 const TimelineLayers = () => {
   const cameras = useCameras()
-  const {playPoint, playbackTs} = usePlayPointState()
+  const {playPoint, setPlayPoint, playbackTs, paused, setPaused} = usePlayPointState()
   const slice = useSlice()
   const events = useTimelineEvents()
   const ts = playbackTs || playPoint?.ts || null
+  useTimelineHotkeys(cameras, playPoint, setPlayPoint, ts, paused, setPaused)
   return (
     <div id="layers">
       <div className="legend">

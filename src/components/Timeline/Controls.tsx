@@ -4,7 +4,7 @@ import { useSliceState } from './SliceContext'
 import DownloadModal from './DownloadModal'
 
 const Controls = () => {
-  const {playPoint, setPlayPoint, playbackTs} = usePlayPointState()
+  const {playPoint, setPlayPoint, playbackTs, paused, setPaused} = usePlayPointState()
   const [slice, setSlice] = useSliceState()
   const [downloadOpen, setDownloadOpen] = useState(false)
   const size = slice[1] - slice[0]
@@ -12,12 +12,16 @@ const Controls = () => {
   const zoomOut = () => setSlice([slice[0] - size / 2, slice[1] + size / 2])
   const stop = () => setPlayPoint(null)
   const canDownload = !!playPoint?.camId
+  const canPause = !!playPoint?.camId
 
   return (
     <div id="controls">
       <div className="control-block" />
       <div className="control-block">
-        <div className="button icon-play disabled" />
+        <div
+          className={'button ' + (paused ? 'icon-play' : 'icon-pause') + (canPause ? '' : ' disabled')}
+          onClick={() => canPause && setPaused(!paused)}
+        />
         <div className={'button icon-stop' + (playPoint ? '' : ' disabled')} onClick={stop} />
         <div
           className={'button icon-download' + (canDownload ? '' : ' disabled')}

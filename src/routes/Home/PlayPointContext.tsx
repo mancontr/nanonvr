@@ -7,6 +7,8 @@ interface PlayPointContextType {
   setPlayPoint: (p: PlayPoint) => void
   playbackTs: number
   setPlaybackTs: (p: number) => void
+  paused: boolean
+  setPaused: (p: boolean) => void
 }
 
 const PlayPointContext = createContext<PlayPointContextType>(null)
@@ -17,12 +19,14 @@ export const PlayPointProvider = ({ children }) => {
     if (loc.state?.camId && loc.state?.ts) return { camId: loc.state.camId, ts: parseInt(loc.state.ts) }
   })
   const [playbackTs, setPlaybackTs] = useState<number>()
+  const [paused, setPaused] = useState(false)
   const setPlayPoint: (p: PlayPoint) => void = p => {
     setPlayPointInternal(p)
     setPlaybackTs(null)
+    setPaused(false)
   }
   return (
-    <PlayPointContext.Provider value={{ playPoint, setPlayPoint, playbackTs, setPlaybackTs }}>
+    <PlayPointContext.Provider value={{ playPoint, setPlayPoint, playbackTs, setPlaybackTs, paused, setPaused }}>
       {children}
     </PlayPointContext.Provider>
   )
