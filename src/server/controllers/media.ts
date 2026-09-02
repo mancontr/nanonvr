@@ -80,7 +80,7 @@ export const startDownload: RequestHandler = async (req, res) => {
   const tmpDir = path.join(videoFolder, 'tmp')
   fs.mkdirSync(tmpDir, { recursive: true })
   const tmpPath = path.join(tmpDir, `download-${randomUUID()}.mp4`)
-  const filename = `${cam.name} ${date2filename(start)}.mp4`
+  const filename = `${date2filename(start)} ${cam.name}.mp4`
 
   const id = startDownloadJob(files, tmpPath, filename, { title: cam.name, creationTime: new Date(start).toISOString() })
   res.send({ id })
