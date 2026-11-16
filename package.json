@@ -9,6 +9,7 @@
   "devDependencies": {
     "@gluedigital/ruse-fetch-extras": "^1.2.10",
     "chokidar": "^4.0.3",
+    "hls.js": "1.7.4",
     "mime": "1.6.0",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
@@ -33,6 +34,6 @@
     "noSsr": true
   },
   "engines": {
-    "node": "20"
+    "node": "22"
   }
 }

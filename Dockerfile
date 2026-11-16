@@ -19,7 +19,10 @@ VOLUME /share
 VOLUME /data
 
 # Prepare dependencies
+# - MediaMTX: connects to the cameras, records them, and serves recordings
+# - ffmpeg: snapshots and downloads
 RUN apk add --no-cache ffmpeg tzdata
+COPY --from=bluenviron/mediamtx:1.21.3 /mediamtx /usr/local/bin/mediamtx
 
 WORKDIR /app/
 COPY package.json yarn.lock /app/

@@ -2,7 +2,8 @@ import { RequestHandler } from 'express'
 import { Readable } from 'stream'
 import { getConfig } from '../services/config'
 import * as cameras from '../services/cameras'
-import { Recorder } from '../services/ffmpeg'
+import * as mediamtx from '../services/mediamtx'
+import { grabFrame } from '../services/ffmpeg'
 
 export const getCameras: RequestHandler = (_, res) => {
   const cams = getConfig().cameras
@@ -14,44 +15,75 @@ export const getCamera: RequestHandler = (req, res) => {
   res.send(cam)
 }
 
-export const getCameraStatus: RequestHandler = (req, res) => {
-  const rec = Recorder.get(req.params.id)
-  if (rec) {
-    res.send({
-      status: rec.getStatus(),
-      logs: rec.getLogs(),
-    })
-  } else {
-    res.send({
-      status: 'UNKNOWN',
-      logs: []
-    })
+export const getCameraStatus: RequestHandler = async (req, res) => {
+  const id = req.params.id
+  if (!cameras.getCamera(id)) {
+    res.send({ status: 'UNKNOWN', logs: [] })
+    return
   }
+  res.send({
+    status: await mediamtx.getStatus(id),
+    logs: mediamtx.getLogs(id),
+  })
 }
 
-export const recordStart: RequestHandler = (req, res) => {
-  const rec = Recorder.get(req.params.id)
-  rec.start()
+export const recordStart: RequestHandler = async (req, res) => {
+  await mediamtx.startRecording(req.params.id)
   res.send({})
 }
 
-export const recordStop: RequestHandler = (req, res) => {
-  const rec = Recorder.get(req.params.id)
-  rec.stop()
+export const recordStop: RequestHandler = async (req, res) => {
+  await mediamtx.stopRecording(req.params.id)
   res.send({})
+}
+
+// Snapshots are shared for a short while, so many viewers cost the same as one
+const SNAPSHOT_TTL = 2000
+const snapshots = new Map<string, { time: number, promise: Promise<Buffer> }>()
+
+const getSnapshot = (camId: string): Promise<Buffer> => {
+  const cached = snapshots.get(camId)
+  // Pending ones (time = Infinity) are always shared
+  if (cached && Date.now() - cached.time < SNAPSHOT_TTL) return cached.promise
+  const entry = { time: Infinity, promise: grabFrame(mediamtx.getRtspUrl(camId)) }
+  snapshots.set(camId, entry)
+  entry.promise.then(
+    () => { entry.time = Date.now() },
+    () => { if (snapshots.get(camId) === entry) snapshots.delete(camId) }
+  )
+  return entry.promise
 }
 
 export const getThumb: RequestHandler = async (req, res) => {
-  const cam = getConfig().cameras.find(cam => cam.uuid === req.params.id)
-  if (!cam.snapshot) res.status(404).send({ error: 'Not Found' })
+  const cam = cameras.getCamera(req.params.id)
+  if (!cam) {
+    res.status(404).send({ error: 'Not Found' })
+    return
+  }
 
-  const { username, password, origin, pathname, search } = new URL(cam.snapshot)
-  const credentials = btoa(`${username}:${password}`)
-  const url = origin + pathname + search
+  // Preferred: a frame from the stream we are already receiving
+  try {
+    const jpeg = await getSnapshot(cam.uuid)
+    res.type('image/jpeg').send(jpeg)
+    return
+  } catch (e) {
+    if (!cam.snapshot) {
+      res.status(503).send({ error: e.message })
+      return
+    }
+  }
 
-  const fres = await fetch(url, { headers: { 'Authorization': `Basic ${credentials}`}})
-  res.type(fres.headers.get('Content-Type') || 'image/jpeg')
-  Readable.fromWeb(fres.body as any).pipe(res)
+  // Fallback: ask the camera itself
+  try {
+    const { username, password, origin, pathname, search } = new URL(cam.snapshot)
+    const credentials = btoa(`${username}:${password}`)
+    const url = origin + pathname + search
+    const fres = await fetch(url, { headers: { 'Authorization': `Basic ${credentials}`}})
+    res.type(fres.headers.get('Content-Type') || 'image/jpeg')
+    Readable.fromWeb(fres.body as any).pipe(res)
+  } catch (e) {
+    res.status(502).send({ error: e.message })
+  }
 }
 
 export const addCamera: RequestHandler = (req, res) => {

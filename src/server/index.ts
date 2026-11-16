@@ -3,6 +3,7 @@ import * as cameras from './controllers/cameras'
 import * as tracks from './controllers/tracks'
 import * as events from './controllers/events'
 import * as media from './controllers/media'
+import * as live from './controllers/live'
 
 const router = Router()
 
@@ -23,6 +24,9 @@ router.get('/api/events', events.getEvents)
 router.post('/media/:camId/download', media.startDownload)
 router.get('/media/downloads/:id/status', media.getDownloadStatus)
 router.get('/media/downloads/:id', media.serveDownloadFile)
+router.get('/live/:camId/:file', live.serveLive)
+router.get('/media/:camId/play', media.servePlayback)
+router.get('/media/:camId/keyframe', media.getKeyframe)
 router.get('/media/:camId/:track', media.serveTrack)
 router.get('/media/:camId/events/:event', media.serveEvent)
 

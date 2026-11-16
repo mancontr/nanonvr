@@ -7,7 +7,7 @@ Let your camera do the work.
 
 ## Features
 
-- Passthrough recording (with anything ffmpeg can handle)
+- Passthrough recording (RTSP, RTMP, HLS, SRT... anything [MediaMTX](https://github.com/bluenviron/mediamtx) can read)
 - Camera Events
 
 That's all! We will not implement transcoding, motion detection, or any other
@@ -27,5 +27,11 @@ You can also run it through [Docker](https://hub.docker.com/r/mancontr/nanonvr) 
 yarn
 yarn start
 ```
+
+When running it as a Node project, you'll need [MediaMTX](https://github.com/bluenviron/mediamtx/releases)
+and [ffmpeg](https://ffmpeg.org/) on your `PATH` (or point `MEDIAMTX_BIN` to the MediaMTX binary).
+
+MediaMTX listens only on localhost, on ports 18554 (RTSP), 18888 (HLS), 19996 (playback) and 19997 (API).
+If any of those is taken, use `MEDIAMTX_RTSP_PORT`, `MEDIAMTX_HLS_PORT`, `MEDIAMTX_PLAYBACK_PORT` or `MEDIAMTX_API_PORT`.
 
 As soon as it starts, it will print the address you can use to access the web interface.

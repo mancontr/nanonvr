@@ -54,6 +54,7 @@ export function filename2date(filename: string): number {
     +filename.substring(11, 13),
     +filename.substring(14, 16),
     +filename.substring(17, 19),
+    filename[19] === '-' ? +filename.substring(20, 23) : 0, // Milliseconds, if present
   ).valueOf()
 }
 

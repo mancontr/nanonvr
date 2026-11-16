@@ -7,7 +7,15 @@ export const filename2localDate = (filename) => new Date(
   parseInt(filename.substring(11, 13)),
   parseInt(filename.substring(14, 16)),
   parseInt(filename.substring(17, 19)),
+  filename[19] === '-' ? parseInt(filename.substring(20, 23)) : 0, // Milliseconds, if present
 ).getTime()
+
+/**
+ * Recordings made by MediaMTX have sub-second precision on their names, and
+ * are played through its playback server. Older ones (made by ffmpeg) do not,
+ * and are played directly.
+ */
+export const isPlaybackTrack = (filename: string) => filename?.[19] === '-'
 
 export const trackGroupAddDates = (track: TrackGroup) => {
   const start = filename2localDate(track.start)

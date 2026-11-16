@@ -3,6 +3,7 @@ import Loading from 'src/components/Loading/Loading'
 import basename from 'src/util/basename'
 import { useCameras } from 'src/hooks/api'
 import { usePlayPointState } from 'src/routes/Home/PlayPointContext'
+import LiveView from './LiveView'
 import './Snaps.sass'
 
 const Snaps = (): JSX.Element => {
@@ -11,9 +12,10 @@ const Snaps = (): JSX.Element => {
 
   if (playPoint?.camId) {
     const cam = cams.find(c => c.uuid === playPoint.camId)
+    const back = () => setPlayPoint(null)
     return (
       <div id="snaps" className="one">
-        <Snap cam={cam} onClick={() => setPlayPoint(null)} />
+        <LiveView cam={cam} onClick={back} fallback={<Snap cam={cam} onClick={back} />} />
       </div>
     )
   }

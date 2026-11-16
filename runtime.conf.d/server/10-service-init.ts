@@ -4,7 +4,7 @@ import { init } from 'src/server/services/config'
 // They will wait for a signal on the bus to start working.
 import 'src/server/services/cleanup'
 import 'src/server/services/db'
-import 'src/server/services/ffmpeg'
+import 'src/server/services/mediamtx'
 import 'src/server/services/fswatch'
 import 'src/server/services/ftp'
 import 'src/server/services/mqtt'

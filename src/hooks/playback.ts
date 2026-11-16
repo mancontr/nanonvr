@@ -8,11 +8,17 @@ interface TrackMeta {
   start: number
   nextTrack: string
   nextStart: number
+  /** Start of the first track starting after the given instant, if any */
+  nextStartAfter: (ts: number) => number | undefined
 }
 
 export const useTrackFromPlayPoint = (playPoint: PlayPoint): TrackMeta => {
   const camTracks = useCameraTracks(playPoint?.camId)
   const tracksWithDates = useMemo(() => camTracks?.map(trackGroupAddDates) || [], [camTracks])
+  const allStarts = useMemo(
+    () => tracksWithDates.flatMap(g => g.tracks.map(t => t.start)).sort((a, b) => a - b),
+    [tracksWithDates]
+  )
   const ts = playPoint?.ts
   if (!ts) return null
   const group = tracksWithDates.find(t => t.start <= ts && t.end >= ts)
@@ -25,5 +31,6 @@ export const useTrackFromPlayPoint = (playPoint: PlayPoint): TrackMeta => {
     start: track?.start,
     nextTrack: nextTrack?.filename,
     nextStart: nextTrack?.start,
+    nextStartAfter: (after: number) => allStarts.find(s => s > after),
   }
 }

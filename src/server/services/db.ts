@@ -42,6 +42,13 @@ export class Database {
       .all([camId, fromFilename, toFilename])
   }
 
+  getMaxTrackLength(camId: string): number {
+    return this.db
+      .prepare('SELECT MAX(length) AS length FROM track WHERE uuid = ?')
+      .get([camId])
+      ?.length || 0
+  }
+
   getTrack(camId: string, filename: string): Track {
     return this.db
       .prepare('SELECT * FROM track WHERE uuid = ? AND filename = ?')
